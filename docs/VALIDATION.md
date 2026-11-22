@@ -1,15 +1,16 @@
 # Validation scope
 
-The current coordinated candidate is 0.1.0 (version code 2). A release APK and a
-source build are different artifacts; the final release checksum and QA evidence
-must be matched before publication.
+Version 0.1.0 (version code 2) is the initial native Android phone release.
+The release APK is built from its recorded public source commit. Its exact
+SHA256 and signing verification are recorded with the release assets/notes,
+rather than inserting a self-referential artifact hash into source files.
 
 The maintained local evidence records 39 scenario tests on one Android 17 physical
 phone and 40 on an Android 6/API 23 emulator before the final episode-dock/update
 changes. A subsequent physical-phone run passed ten focused episode-dock,
 slider-playback and update scenarios. These are bounded observations, not proof
-that every device or every streaming source works. The final coordinating QA
-report will record the precise release artifact and any remaining limitations.
+that every device or every streaming source works. The release notes record the precise source commit, artifact checksum and
+source-check run. The limitations below remain part of the release scope.
 
 Automated coverage includes Unicode metadata, route/detail caching, home artwork,
 search, local library, playback state, subtitles, audio, gestures, downloads,
