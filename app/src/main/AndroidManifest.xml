@@ -1,0 +1,42 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ <uses-permission android:name="android.permission.INTERNET" />
+ <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+ <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+ <application android:label="MovieBox" android:icon="@mipmap/phone_launcher" android:roundIcon="@mipmap/phone_launcher_round" android:theme="@style/AppTheme" android:allowBackup="false" android:usesCleartextTraffic="false" android:supportsRtl="true">
+  <activity android:name=".PhoneActivity" android:exported="true" android:windowSoftInputMode="adjustResize" android:configChanges="keyboard|keyboardHidden|screenSize|orientation">
+  </activity>
+  <activity-alias android:name=".LauncherOriginal" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="true" android:label="MovieBox" android:icon="@mipmap/phone_launcher">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity-alias android:name=".Launcher01" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_01">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity-alias android:name=".Launcher02" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_02">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity-alias android:name=".Launcher03" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_03">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity-alias android:name=".Launcher04" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_04">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity-alias android:name=".Launcher05" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_05">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity-alias android:name=".Launcher06" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_06">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity-alias android:name=".Launcher07" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_07">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity-alias android:name=".Launcher08" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_08">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity-alias android:name=".Launcher09" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_09">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+  <activity-alias android:name=".Launcher10" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_10">
+   <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+  </activity-alias>
+ </application>
+</manifest>

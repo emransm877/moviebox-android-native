@@ -1,0 +1,26 @@
+# Generated builds and machine configuration
+.gradle/
+**/build/
+local.properties
+local-builds/
+verification/
+__pycache__/
+*.pyc
+.idea/
+*.iml
+.DS_Store
+# Private signing material and account credentials
+.moviebox-signing/
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.mobileprovision
+*identity.json
+.env
+.env.*
+*.log
+
+# Optional third-party captured artwork is not redistributed
+app/src/androidTest/assets/actual-*.webp
+app/src/androidTest/assets/native-banner-feed.json
