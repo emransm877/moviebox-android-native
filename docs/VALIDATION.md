@@ -30,3 +30,9 @@ are not published. The initial release is built locally from the public source
 commit using the retained signing identity. Exact APK SHA256, signature identity,
 permissions and non-debuggable status are recorded with the release evidence.
 GitHub CI checks compilation and local tests, not real-service or device playback.
+
+The focused final ten scenarios also passed on Android 6/API 23 in 17.898s
+after a clean test-app reinstall, and on the physical Android 17 phone in 12.078s.
+These cover EpisodeDock (4), Updates (2) and SliderPlayback (4). An earlier
+emulator installation-race failure was retained in private evidence; it was not
+counted as a test pass or repaired by wiping user data.
