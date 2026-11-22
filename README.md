@@ -27,8 +27,8 @@ signing identity to preserve its library. Uninstalling deletes private app data.
 - Browse seasons and episodes inside the player and automatically continue a series.
 - Seek with touch gestures, adjust volume on the right and brightness on the left, and change how video fits the screen.
 - Download an available video for local playback, subject to the source and storage permissions.
-- Choose your appearance and one of ten additional launcher icons.
-- Check for optional updates in Settings. Background checks are at most every twelve hours; updates are never forced or installed silently.
+- Choose your appearance and one of ten additional launcher icons under **Me -> App icon**.
+- Check for optional updates under **Me -> Check for updates**. Background checks are at most every twelve hours; updates are never forced or installed silently.
 
 ## Android App or Android patch?
 

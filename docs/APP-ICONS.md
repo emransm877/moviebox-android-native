@@ -14,21 +14,23 @@ The ten assets have legacy API23 bitmap wrappers and API26 adaptive wrappers.
 Each 432px WebP retains its generated proportions, adds no network dependency,
 and the ten files total 99,048 bytes. The existing Original resources are unchanged.
 
+Users can choose an icon under **Me -> App icon**.
+
 Activity integration:
 
 ```java
 AppLogos.restore(this); // normal initialization
 
-// Existing Settings row, using the current theme tokens and actual rerender callback:
+// Existing Me screen row, using the current theme tokens and route callback:
 settingRow("App icon", AppLogos.name(this), () ->
-    AppLogos.show(this, bg, panel, ink, accent, secondary, this::renderSettings));
+    AppLogos.show(this, bg, panel, ink, accent, secondary, () -> browse("Settings")));
 
 // Optional in-app branding preview:
 logoImage.setImageResource(AppLogos.preview(this));
 ```
 
-`renderSettings` above denotes the application's existing Settings-rendering method;
-it is not a method supplied by this helper.
+`Settings` is the internal route name; the phone navigation label shown to users
+is **Me**. The callback redraws that screen after an icon change.
 
 `AppLogosTest` covers stable choice identities and invalid preference fallback.
 `AppLogosScenarios` changes each alias, verifies exactly one enabled launcher,

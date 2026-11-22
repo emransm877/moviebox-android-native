@@ -10,7 +10,7 @@ installation permission. An incompatible signature or a different project cannot
 update this app in place. Do not uninstall a working app just to bypass a signature
 mismatch if you need its private library. Report the package/version instead.
 
-To update, use Settings -> Check for updates, or the repository Releases page.
+To update, use Me -> Check for updates, or the repository Releases page.
 Optional reminders check at most once per twelve hours, respect their setting,
 and open an available release link. A new GitHub commit alone is not an app update:
 a newer complete stable APK must be published. There is no forced upgrade or silent
