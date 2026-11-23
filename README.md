@@ -10,7 +10,7 @@ The installed app is named **MovieBox**.
 
 ## Get started
 
-1. Open the latest release above and download **MovieBox-Android-App-0.1.0.apk**.
+1. Open the latest release above and download the **MovieBox-Android-App-*.apk** attached to it.
 2. Open the APK on your phone. Android may ask you to allow installation from your browser or file manager.
 3. Install MovieBox, then open it. You can turn that installation permission off afterward.
 
@@ -23,12 +23,13 @@ signing identity to preserve its library. Uninstalling deletes private app data.
 
 - Browse movies and TV shows, search with suggestions, and open a title from the home slider.
 - Save your list and resume progress in this app's own local library.
+- Back up or restore your list and progress under **Me**, without transferring downloaded videos or another app's private data.
 - Play available video qualities with native Media3 playback; choose available audio and subtitles.
 - Browse seasons and episodes inside the player and automatically continue a series.
 - Seek with touch gestures, adjust volume on the right and brightness on the left, and change how video fits the screen.
-- Download an available video for local playback, subject to the source and storage permissions.
+- Download supported single-file videos for local playback. New downloads use Wi-Fi unless you explicitly allow mobile data for that file.
 - Choose your appearance and one of ten additional launcher icons under **Me -> App icon**.
-- Check for optional updates under **Me -> Check for updates**. Background checks are at most every twelve hours; updates are never forced or installed silently.
+- Check for optional updates under **Me -> Check for updates**. Successful automatic checks are spaced twelve hours apart; failed checks can be retried. Updates are never forced or installed silently.
 
 ## Android App or Android patch?
 
@@ -47,8 +48,7 @@ Title availability, artwork, languages, subtitles and actual qualities depend on
 the external service. Network errors, expired links or missing tracks can occur.
 A source without 720p cannot honestly be relabeled as 720p.
 
-Android 17 on one physical phone and Android 6 in an emulator have been checked;
-that is not a guarantee for every phone, decoder, launcher or Android version.
+Version 0.1.1 passed 127 scoped scenarios on one Android 17 phone after a same-signer in-place update. Its 29 unit tests passed; lint reports zero errors and 89 warnings. Android 6 emulator checks apply to earlier builds, not this exact APK. These results do not guarantee every phone, decoder, launcher or Android version.
 See [validation scope](docs/VALIDATION.md), [privacy](docs/PRIVACY.md),
 [installation help](docs/INSTALLATION.md) and [security](SECURITY.md).
 

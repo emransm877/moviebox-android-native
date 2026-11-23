@@ -1,0 +1,11 @@
+package org.emransm.moviebox.phone;
+import org.junit.Test;import static org.junit.Assert.*;
+public class DownloadPolicyTest {
+ @Test public void recognizedSingleFileContainersKeepTheirTrueExtension(){assertEquals(".mp4",DownloadPolicy.extension("https://owned.invalid/video.mp4?signature=private","", ""));assertEquals(".webm",DownloadPolicy.extension("https://owned.invalid/video","video/webm", ""));assertEquals(".mkv",DownloadPolicy.extension("https://owned.invalid/video","", "mkv"));}
+ @Test public void declaredMp4SupportsExtensionlessServiceFiles(){assertEquals(".mp4",DownloadPolicy.extension("https://owned.invalid/opaque","video/mp4; codecs=avc1", ""));assertEquals(".mp4",DownloadPolicy.extension("https://owned.invalid/opaque","", "MP4"));}
+ @Test public void segmentedAndUnknownResourcesAreNotMisnamedMp4(){assertEquals("",DownloadPolicy.extension("https://owned.invalid/video.m3u8","video/mp4", ""));assertEquals("",DownloadPolicy.extension("https://owned.invalid/video.mp4","application/dash+xml", ""));assertEquals("",DownloadPolicy.extension("https://owned.invalid/video","", ""));}
+ @Test public void wifiOnlyIsTheDefaultAndMobileRequiresExplicitOptIn(){assertEquals(2,DownloadPolicy.allowedNetworkTypes(false));assertEquals(3,DownloadPolicy.allowedNetworkTypes(true));}
+ @Test public void invalidAddressesCannotBecomeDownloadable(){for(String uri:new String[]{"http://owned.invalid/v.mp4","file:///v.mp4","https://user:secret@owned.invalid/v.mp4","nonsense"})assertEquals("",DownloadPolicy.extension(uri,"video/mp4", ""));}
+ @Test public void completedFailedAndMissingRowsAreTerminalButPausedAndRunningAreNot(){assertTrue(DownloadPolicy.terminal(8));assertTrue(DownloadPolicy.terminal(16));assertTrue(DownloadPolicy.terminal(0));assertFalse(DownloadPolicy.terminal(2));assertFalse(DownloadPolicy.terminal(4));assertFalse(DownloadPolicy.terminal(-1));}
+ @Test public void systemFailuresGiveActionableSafeGuidance(){assertTrue(DownloadPolicy.status(16,1006).contains("storage"));assertTrue(DownloadPolicy.status(16,403).contains("refresh"));assertTrue(DownloadPolicy.status(16,503).contains("server"));assertTrue(DownloadPolicy.status(4,3).contains("Wi-Fi"));assertTrue(DownloadPolicy.status(16,429).contains("Wait"));}
+}

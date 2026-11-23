@@ -60,28 +60,29 @@ public final class AppLogos {
     private static TextView label(Context context,String text,int size,int color){TextView value=new TextView(context);value.setText(text);value.setTextSize(size);value.setTextColor(color);return value;}
 
     /** Compact native selector. Callbacks run only after a successfully persisted launcher change. */
-    public static void show(Activity activity,int background,int panel,int ink,int accent,int muted,Runnable onChanged){
+    public static Dialog show(Activity activity,int background,int panel,int ink,int accent,int muted,Runnable onChanged){
         Dialog dialog=new Dialog(activity);dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         LinearLayout body=new LinearLayout(activity);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(dp(activity,16),dp(activity,14),dp(activity,16),dp(activity,12));body.setBackground(surface(activity,background,Color.TRANSPARENT));
         LinearLayout heading=new LinearLayout(activity);heading.setGravity(Gravity.CENTER_VERTICAL);
-        TextView title=label(activity,"App icon",21,ink);title.setTypeface(null,Typeface.BOLD);heading.addView(title,new LinearLayout.LayoutParams(0,dp(activity,48),1));title.setGravity(Gravity.CENTER_VERTICAL);
-        Button close=new Button(activity);close.setText("\u00d7");close.setTextSize(24);close.setTextColor(muted);close.setBackgroundColor(Color.TRANSPARENT);close.setContentDescription("Close app icon choices");close.setOnClickListener(v->dialog.dismiss());heading.addView(close,new LinearLayout.LayoutParams(dp(activity,48),dp(activity,48)));body.addView(heading);
+        TextView title=label(activity,"App icon",21,ink);title.setTypeface(null,Typeface.BOLD);heading.addView(title,new LinearLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,1));title.setMinHeight(dp(activity,48));title.setGravity(Gravity.CENTER_VERTICAL);
+        Button close=new Button(activity);close.setText("\u00d7");close.setTextSize(android.util.TypedValue.COMPLEX_UNIT_DIP,24);close.setPadding(0,0,0,0);close.setIncludeFontPadding(false);close.setGravity(Gravity.CENTER);close.setTextColor(muted);close.setBackgroundColor(Color.TRANSPARENT);close.setContentDescription("Close app icon choices");close.setOnClickListener(v->dialog.dismiss());heading.addView(close,new LinearLayout.LayoutParams(dp(activity,48),dp(activity,48)));body.addView(heading);
         TextView note=label(activity,"Choose your look. Your launcher may take a moment to refresh.",12,muted);note.setPadding(0,0,0,dp(activity,12));body.addView(note);
         ScrollView scroll=new ScrollView(activity);scroll.setFillViewport(false);scroll.setClipToPadding(false);scroll.setPadding(0,0,0,dp(activity,4));
-        GridLayout grid=new GridLayout(activity);grid.setColumnCount(3);grid.setUseDefaultMargins(false);String selected=current(activity);
+        GridLayout grid=new GridLayout(activity);int columns=activity.getResources().getConfiguration().fontScale>1.3f?2:3;grid.setColumnCount(columns);grid.setUseDefaultMargins(false);String selected=current(activity);
         // Show the ten new designs first, with Original retained as an explicit reversible option.
         for(int ordinal=0;ordinal<IDS.length;ordinal++){
             final int n=ordinal==IDS.length-1?0:ordinal+1;boolean active=IDS[n].equals(selected);
             LinearLayout card=new LinearLayout(activity);card.setOrientation(LinearLayout.VERTICAL);card.setGravity(Gravity.CENTER);card.setPadding(dp(activity,5),dp(activity,10),dp(activity,5),dp(activity,8));card.setBackground(surface(activity,panel,active?accent:Color.TRANSPARENT));card.setFocusable(true);card.setClickable(true);card.setSelected(active);card.setContentDescription(NAMES[n]+" app icon"+(active?", selected":", choose"));
             ImageView image=new ImageView(activity);image.setImageResource(PREVIEWS[n]);image.setScaleType(ImageView.ScaleType.FIT_CENTER);image.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);card.addView(image,new LinearLayout.LayoutParams(dp(activity,56),dp(activity,56)));
-            TextView name=label(activity,NAMES[n],11,active?accent:ink);name.setGravity(Gravity.CENTER);name.setMaxLines(2);name.setMinHeight(dp(activity,30));LinearLayout.LayoutParams nameLp=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);nameLp.topMargin=dp(activity,6);card.addView(name,nameLp);
+            TextView name=label(activity,NAMES[n],11,active?accent:ink);name.setGravity(Gravity.CENTER);name.setMaxLines(Integer.MAX_VALUE);name.setMinHeight(dp(activity,30));LinearLayout.LayoutParams nameLp=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);nameLp.topMargin=dp(activity,6);card.addView(name,nameLp);
             card.setOnFocusChangeListener((view,focused)->view.setBackground(surface(activity,panel,focused||view.isSelected()?accent:Color.TRANSPARENT)));
             card.setOnClickListener(v->{try{select(activity,IDS[n]);dialog.dismiss();if(onChanged!=null)onChanged.run();Toast.makeText(activity,"App icon changed",Toast.LENGTH_SHORT).show();}catch(RuntimeException error){Toast.makeText(activity,"Couldn't change the app icon. Please try again.",Toast.LENGTH_LONG).show();}});
-            GridLayout.LayoutParams lp=new GridLayout.LayoutParams(GridLayout.spec(ordinal/3),GridLayout.spec(ordinal%3,1f));lp.width=0;lp.height=dp(activity,118);lp.setMargins(dp(activity,3),dp(activity,3),dp(activity,3),dp(activity,3));grid.addView(card,lp);
+            GridLayout.LayoutParams lp=new GridLayout.LayoutParams(GridLayout.spec(ordinal/columns),GridLayout.spec(ordinal%columns,1f));lp.width=0;lp.height=ViewGroup.LayoutParams.WRAP_CONTENT;card.setMinimumHeight(dp(activity,118));lp.setMargins(dp(activity,3),dp(activity,3),dp(activity,3),dp(activity,3));grid.addView(card,lp);
         }
         scroll.addView(grid,new ScrollView.LayoutParams(-1,-2));body.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
         dialog.setContentView(body);Window window=dialog.getWindow();if(window!=null){window.setBackgroundDrawableResource(android.R.color.transparent);window.setDimAmount(.5f);window.addFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND);}
         dialog.show();
         if(window!=null){int width=Math.min(dp(activity,440),activity.getResources().getDisplayMetrics().widthPixels-dp(activity,24));int height=Math.min(dp(activity,640),(int)(activity.getResources().getDisplayMetrics().heightPixels*.85f));window.setLayout(width,height);window.setGravity(Gravity.CENTER);}
+        return dialog;
     }
 }

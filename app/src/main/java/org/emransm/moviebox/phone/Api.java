@@ -21,6 +21,7 @@ public class Api {
     private final Map<String,JSONObject> details=new java.util.concurrent.ConcurrentHashMap<>();private final Map<String,Long> detailTimes=new java.util.concurrent.ConcurrentHashMap<>();
     private final Map<String,JSONObject> sourceCache=new java.util.concurrent.ConcurrentHashMap<>();
     private final Map<String,Long> sourceTimes=new java.util.concurrent.ConcurrentHashMap<>();
+    private final java.util.concurrent.atomic.AtomicLong sourceEpoch=new java.util.concurrent.atomic.AtomicLong();
     private final JSONObject client;
     private UiCache uiCache;
     interface NativeSession {String load();void save(String token);void clear();}
@@ -134,13 +135,21 @@ public class Api {
     public List<JSONObject> search(String keyword) throws Exception {warm();return items(request("/subject-api/search",args("host",NATIVE),new JSONObject().put("keyword",keyword).put("page",1).put("perPage",20).put("subjectType",0),true));}
     public List<String> suggest(String keyword) throws Exception {warm();Object response=request("/subject-api/search-suggest",args("keyword",keyword,"perPage",8,"resultMode",0),null,true);List<String> result=new ArrayList<>();for(JSONObject item:items(response)){String text=item.optString("word",item.optString("title",item.optString("keyword")));if(!text.isEmpty())result.add(text);if(result.size()>=8)break;}return result;}
     /** Memory-only lookup is safe on the UI thread. Disk and network run in detail(). */
-    public JSONObject cachedDetail(String id){try{JSONObject saved=details.get(id);Long at=detailTimes.get(id);if(saved!=null&&at!=null&&android.os.SystemClock.elapsedRealtime()-at<UiCache.DETAIL_AGE_MS)return new JSONObject(saved.toString());}catch(Exception ignored){}return null;}
+    public JSONObject cachedDetail(String id){return cachedDetail(id,UiCache.DETAIL_AGE_MS);}
+    public JSONObject cachedDisplayDetail(String id){return cachedDetail(id,UiCache.DETAIL_DISPLAY_AGE_MS);}
+    private JSONObject cachedDetail(String id,long maxAge){try{JSONObject saved=details.get(id);Long at=detailTimes.get(id);if(saved!=null&&at!=null&&android.os.SystemClock.elapsedRealtime()-at<maxAge)return new JSONObject(saved.toString());}catch(Exception ignored){}return null;}
+    private synchronized void rememberDetail(String id,JSONObject value,long age)throws JSONException {
+        if(!details.containsKey(id)&&details.size()>=48){String oldest=null;long time=Long.MAX_VALUE;for(Map.Entry<String,Long> entry:detailTimes.entrySet())if(entry.getValue()<time){oldest=entry.getKey();time=entry.getValue();}if(oldest!=null){details.remove(oldest);detailTimes.remove(oldest);}}
+        long at=android.os.SystemClock.elapsedRealtime()-age;Long current=detailTimes.get(id);if(current!=null&&current>at)return;
+        details.put(id,new JSONObject(value.toString()));detailTimes.put(id,at);
+    }
+    public void restoreCachedDetails(){if(uiCache==null)return;for(UiCache.DetailRecord record:uiCache.recentDetails())try{rememberDetail(record.item.getString("subjectId"),record.item,record.age);}catch(Exception ignored){}}
     private JSONObject requestSeasons(String id)throws Exception{return (JSONObject)request("/subject-api/season-info",args("host",NATIVE,"subjectId",id),null,true);}
     public JSONObject detail(JSONObject subject) throws Exception {
         String id=subject.getString("subjectId");
         synchronized(detailLocks[(id.hashCode()&Integer.MAX_VALUE)%detailLocks.length]){
             JSONObject saved=cachedDetail(id);if(saved!=null)return saved;
-            if(uiCache!=null){saved=uiCache.readDetail(id);if(saved!=null)return saved;}
+            if(uiCache!=null){UiCache.DetailRecord record=uiCache.readDetailRecord(id);if(record!=null){rememberDetail(id,record.item,record.age);return record.item;}}
             warm();java.util.concurrent.Future<JSONObject> seasonRequest=null;
             if(subject.optInt("subjectType")==2)try{seasonRequest=detailRequests.submit(()->requestSeasons(id));}catch(java.util.concurrent.RejectedExecutionException busy){/* Foreground request can still run sequentially. */}
             try{
@@ -151,13 +160,13 @@ public class Api {
                     catch(java.util.concurrent.ExecutionException failure){Throwable cause=failure.getCause();if(cause instanceof Exception)throw (Exception)cause;throw failure;}
                     result.put("seasons",seasons.optJSONArray("seasons"));
                 }
-                if(details.size()>=48){details.clear();detailTimes.clear();}details.put(id,new JSONObject(result.toString()));detailTimes.put(id,android.os.SystemClock.elapsedRealtime());
+                rememberDetail(id,result,0);
                 if(uiCache!=null)uiCache.writeDetail(id,result);return result;
             }finally{if(seasonRequest!=null&&!seasonRequest.isDone())seasonRequest.cancel(true);}
         }
     }
     private JSONObject resources(JSONObject subject,int season,int episode,int quality) throws Exception {
-        String cacheKey=subject.getString("subjectId")+":"+season+":"+episode+":"+quality;
+        String cacheKey=subject.getString("subjectId")+":"+season+":"+episode+":"+quality+":"+sourceEpoch.get();
         synchronized(resourceLocks[(cacheKey.hashCode()&Integer.MAX_VALUE)%resourceLocks.length]){
         JSONObject cached=sourceCache.get(cacheKey);Long at=sourceTimes.get(cacheKey);
         if(cached!=null&&at!=null&&android.os.SystemClock.elapsedRealtime()-at<45000)return cached;
@@ -174,8 +183,20 @@ public class Api {
         warm();resources(subject,season,episode,quality);
     }
     /** Resolve the first usable source without blocking startup on every quality variant. */
+    public List<JSONObject> freshPlayback(JSONObject subject,int season,int episode,int quality)throws Exception {
+        // An old in-flight prefetch can finish, but only into an obsolete epoch.
+        // No retry can consume its cached signed address, including fallback qualities.
+        sourceEpoch.incrementAndGet();sourceCache.clear();sourceTimes.clear();
+        Set<Integer> attempts=new LinkedHashSet<>(Arrays.asList(quality,720,480));Exception last=null;
+        for(int candidate:attempts){if(Thread.currentThread().isInterrupted())throw new InterruptedIOException("Video refresh cancelled");
+            try{return firstPlayback(subject,season,episode,candidate,false);}catch(Exception failure){last=failure;}}
+        throw new IOException("No playable source is available after bounded refresh.",last);
+    }
     public List<JSONObject> initialPlayback(JSONObject subject,int season,int episode) throws Exception {return initialPlayback(subject,season,episode,1080);}
     public List<JSONObject> initialPlayback(JSONObject subject,int season,int episode,int preferredQuality) throws Exception {
+        return firstPlayback(subject,season,episode,preferredQuality,true);
+    }
+    private List<JSONObject> firstPlayback(JSONObject subject,int season,int episode,int preferredQuality,boolean allowFallback) throws Exception {
         warm();int type=subject.optInt("subjectType");if(type==1){season=0;episode=0;}else if(type==2&&(season<1||episode<1))throw new IOException("Choose a season and episode first.");
         JSONObject batch=resources(subject,season,episode,preferredQuality);Set<Integer> locked=new HashSet<>();
         JSONArray qualities=batch.optJSONArray("collectionResolutions");if(qualities!=null)for(int i=0;i<qualities.length();i++){JSONObject q=qualities.optJSONObject(i);if(q!=null&&q.optInt("requireMemberType")>0)locked.add(q.optInt("resolution"));}
@@ -184,7 +205,7 @@ public class Api {
             if(locked.contains(q)||!Policies.eligibleResource(type,season,episode,row.optInt("se"),row.optInt("ep"),row.optInt("requireMemberType"),row.optBoolean("vipLocked"),q,row.optLong("size"),row.optLong("duration"))||!row.optString("resourceLink").startsWith("https://"))continue;
             sources.add(row);resourceContext.put(subject.optString("subjectId")+":"+row.optString("resourceId"),row);
         }
-        if(sources.isEmpty())return playback(subject,season,episode);
+        if(sources.isEmpty()){if(allowFallback)return playback(subject,season,episode);throw new IOException("That video quality is unavailable.");}
         Collections.sort(sources,(a,b)->Integer.compare(b.optInt("resolution"),a.optInt("resolution")));return sources;
     }
     public List<JSONObject> playback(JSONObject subject,int season,int episode) throws Exception {
@@ -215,6 +236,8 @@ public class Api {
         HttpsURLConnection connection=(HttpsURLConnection)url.openConnection();connection.setConnectTimeout(8000);connection.setReadTimeout(10000);connection.setRequestProperty("User-Agent",UA);
         try{if(connection.getResponseCode()!=200)throw new IOException("Download unavailable");return read(connection.getInputStream(),max);}finally{connection.disconnect();}
     }
+    public byte[] artworkBytes(String url,int maximum)throws Exception{return download(url,maximum);}
+    public byte[] captionBytes(String url,int maximum)throws Exception{return download(url,maximum);}
     public static String artwork(String location,int width){
         try{android.net.Uri uri=android.net.Uri.parse(location);String host=uri.getHost();if(!"https".equals(uri.getScheme())||host==null||!(host.equals("aoneroom.com")||host.endsWith(".aoneroom.com"))||uri.getPath()==null||!uri.getPath().startsWith("/image/"))return location;
             android.net.Uri.Builder builder=uri.buildUpon().clearQuery();for(String key:uri.getQueryParameterNames())if(!key.equals("x-oss-process"))for(String value:uri.getQueryParameters(key))builder.appendQueryParameter(key,value);

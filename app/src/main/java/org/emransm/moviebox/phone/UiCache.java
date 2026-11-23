@@ -34,11 +34,22 @@ public final class UiCache {
             }out.put("seasons",safe);
         }return out;
     }
-    public JSONObject readDetail(String id){synchronized(LOCK){try{
-        JSONObject entry=new JSONObject(Utf8Json.decode(read(new File(detailDirectory,digest(id)+".json"),MAX_SNAPSHOT_BYTES)));
-        long age=System.currentTimeMillis()-entry.getLong("savedAt");if(entry.optInt("schema")!=1||age<0||age>=DETAIL_AGE_MS)return null;
-        JSONObject result=detailMetadata(entry.getJSONObject("item"));return result!=null&&id.equals(result.optString("subjectId"))?result:null;
-    }catch(Exception miss){return null;}}}
+    static final long DETAIL_DISPLAY_AGE_MS=24L*60*60*1000;
+    static final class DetailRecord {final JSONObject item;final long age;DetailRecord(JSONObject item,long age){this.item=item;this.age=age;}}
+    private DetailRecord readDetailRecord(File file,long maxAge){try{
+        JSONObject entry=new JSONObject(Utf8Json.decode(read(file,MAX_SNAPSHOT_BYTES)));
+        long age=System.currentTimeMillis()-entry.getLong("savedAt");if(entry.optInt("schema")!=1||age<0||age>=maxAge)return null;
+        JSONObject item=detailMetadata(entry.getJSONObject("item"));if(item==null||!file.getName().equals(digest(item.getString("subjectId"))+".json"))return null;
+        return new DetailRecord(item,age);
+    }catch(Exception miss){return null;}}
+    DetailRecord readDetailRecord(String id){synchronized(LOCK){try{return readDetailRecord(new File(detailDirectory,digest(id)+".json"),DETAIL_AGE_MS);}catch(Exception miss){return null;}}}
+    public JSONObject readDetail(String id){DetailRecord record=readDetailRecord(id);return record==null?null:record.item;}
+    /** Restore only bounded public display metadata in a worker, never UI-thread disk I/O. */
+    List<DetailRecord> recentDetails(){synchronized(LOCK){
+        List<DetailRecord> records=new ArrayList<>();File[] files=detailDirectory.listFiles((dir,name)->name.endsWith(".json"));if(files==null)return records;
+        Arrays.sort(files,(a,b)->Long.compare(b.lastModified(),a.lastModified()));
+        for(int n=0;n<Math.min(48,files.length);n++){DetailRecord record=readDetailRecord(files[n],DETAIL_DISPLAY_AGE_MS);if(record!=null)records.add(record);}return records;
+    }}
     public void writeDetail(String id,JSONObject value){synchronized(LOCK){try{
         JSONObject safe=detailMetadata(value);if(safe==null||!id.equals(safe.optString("subjectId")))return;
         byte[] bytes=new JSONObject().put("schema",1).put("savedAt",System.currentTimeMillis()).put("item",safe).toString().getBytes(StandardCharsets.UTF_8);
@@ -52,6 +63,7 @@ public final class UiCache {
     private static JSONObject metadata(JSONObject item)throws Exception {String id=item.optString("subjectId"),title=item.optString("title");int type=item.optInt("subjectType");if(id.isEmpty()||id.equals("0")||title.isEmpty()||(type!=1&&type!=2))return null;JSONObject out=new JSONObject().put("subjectId",id).put("title",title).put("subjectType",type);for(String key:new String[]{"releaseDate","imdbRatingValue","countryName","genre"}){Object value=item.opt(key);if(value instanceof String||value instanceof Number||value instanceof Boolean)out.put(key,value);}for(String key:new String[]{"cover","banner"}){JSONObject art=artMetadata(item.opt(key));if(art!=null)out.put(key,art);}return out;}
     public List<JSONObject> readCatalogue(String key){synchronized(LOCK){try{File file=new File(catalogue,digest(key)+".json");JSONObject envelope=new JSONObject(Utf8Json.decode(read(file,MAX_SNAPSHOT_BYTES)));long at=envelope.optLong("savedAt"),now=System.currentTimeMillis();if(envelope.optInt("schema")!=1||at<=0||at>now||now-at>MAX_AGE_MS)return null;JSONArray items=envelope.getJSONArray("items");if(items.length()>200)return null;List<JSONObject> result=new ArrayList<>();for(int n=0;n<items.length();n++){JSONObject item=metadata(items.getJSONObject(n));if(item!=null)result.add(item);}if(result.isEmpty())return null;file.setLastModified(now);return result;}catch(Exception miss){return null;}}}
     public void writeCatalogue(String key,List<JSONObject> items){synchronized(LOCK){try{JSONArray values=new JSONArray();for(JSONObject input:items){if(values.length()>=200)break;JSONObject item=metadata(input);if(item!=null)values.put(item);}if(values.length()==0)return;byte[] bytes=new JSONObject().put("schema",1).put("savedAt",System.currentTimeMillis()).put("items",values).toString().getBytes(StandardCharsets.UTF_8);if(bytes.length>MAX_SNAPSHOT_BYTES)return;atomicWrite(new File(catalogue,digest(key)+".json"),bytes);trim(catalogue,16,16L*MAX_SNAPSHOT_BYTES);}catch(Exception optional){/* Cache cannot prevent browsing. */}}}
+    public void removeArtwork(String resizedUrl){synchronized(LOCK){try{if(!resizedUrl.startsWith("https://"))return;File file=new File(artwork,digest(resizedUrl)+".bin");file.delete();new File(file.getPath()+".bak").delete();}catch(Exception optional){/* Failed cache eviction cannot block a fresh fetch. */}}}
     public byte[] readArtwork(String resizedUrl){synchronized(LOCK){try{if(!resizedUrl.startsWith("https://"))return null;File file=new File(artwork,digest(resizedUrl)+".bin");byte[] bytes=read(file,MAX_ARTWORK_BYTES);long now=System.currentTimeMillis();if(file.lastModified()>now||now-file.lastModified()>MAX_AGE_MS)return null;if(bytes.length==0)return null;file.setLastModified(now);return bytes;}catch(Exception miss){return null;}}}
     public void writeArtwork(String resizedUrl,byte[] bytes){synchronized(LOCK){try{if(!resizedUrl.startsWith("https://")||bytes==null||bytes.length==0||bytes.length>MAX_ARTWORK_BYTES)return;atomicWrite(new File(artwork,digest(resizedUrl)+".bin"),bytes);trim(artwork,Integer.MAX_VALUE,artBudget);}catch(Exception optional){/* Cache cannot prevent artwork rendering. */}}}
 }

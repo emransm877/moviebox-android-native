@@ -5,10 +5,12 @@ are used. Configure your SDK through ANDROID_HOME or an untracked local.properti
 Run `./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug :app:assembleDebugAndroidTest`.
 The committed wrapper verifies its distribution SHA256.
 
-The GitHub workflow runs unit tests, Android lint, debug APK compilation and
+The optional manually dispatched GitHub workflow runs unit tests, Android lint, debug APK compilation and
 instrumentation APK compilation. It neither contacts a live service for tests nor
 publishes an application. Device/emulator instrumentation is a separate maintainer
 step; optional live observation classes are not automatic CI acceptance checks.
+Run routine validation locally. Never enable or trigger GitHub Actions without
+the maintainer's explicit confirmation for that run.
 
 For a release, `tools/build_release.py` accepts `--identity` pointing to an existing
 private signing identity outside this repository and `--output` for local outputs.

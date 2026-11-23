@@ -2,7 +2,7 @@ plugins { id 'com.android.application' }
 android {
  namespace 'org.emransm.moviebox.phone'
  compileSdk 36
- defaultConfig { applicationId 'org.emransm.moviebox.phone'; minSdk 23; targetSdk 35; versionCode 2; versionName '0.1.0'; testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner' }
+ defaultConfig { applicationId 'org.emransm.moviebox.phone'; minSdk 23; targetSdk 35; versionCode 3; versionName '0.1.1'; testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner' }
  buildFeatures { buildConfig true }
  if (System.getenv('MOVIEBOX_PHONE_KEYSTORE')) {
   signingConfigs { release {

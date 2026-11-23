@@ -5,6 +5,18 @@ locally by this app. The app uses its own Android package and does not read anot
 MovieBox app's private library. Android application backup is disabled in the
 manifest. Uninstalling can remove local app data.
 
+Library backup and restore use Android's file picker only after you choose those
+actions. Backup files contain selected saved-title and watch-progress information;
+they exclude service identity, signed media links and downloaded video files.
+Keep exported backups private. If damaged library data needs recovery, the app
+preserves its original files before a confirmed replacement.
+
+New video downloads default to Wi-Fi. Mobile data requires an explicit choice for
+that file, and roaming is disabled. Saved retry information contains public title
+and episode details, rather than a signed source link. System download status
+comes from Android DownloadManager. Subtitle caches have size, count and age limits;
+clearing that cache keeps the subtitle currently playing.
+
 Browsing and streaming contact external catalogue/media/subtitle services. Those
 services and network providers receive ordinary connection information such as
 IP address and requested resources. The client may establish a guest service

@@ -28,15 +28,14 @@ public class EpisodeDockScenarios {
     private void geometry(ActivityScenario<PhoneActivity> scenario){
         main(scenario,a->{
             View dock=(View)field(a,"episodeDrawer"),top=(View)field(a,"playerTopbar"),bottom=(View)field(a,"controls");Dialog dialog=(Dialog)field(a,"episodeDialog");assertNotNull(dock);assertTrue(dialog.isShowing());float density=a.getResources().getDisplayMetrics().density;
-            int[] at=new int[2],topAt=new int[2],bottomAt=new int[2];dock.getLocationOnScreen(at);top.getLocationOnScreen(topAt);bottom.getLocationOnScreen(bottomAt);
-            assertTrue("Dock starts below top controls with 16dp gap",at[1]>=topAt[1]+top.getHeight()+Math.round(16*density)-2);
-            assertTrue("Dock ends above bottom controls with 16dp gap",at[1]+dock.getHeight()<=bottomAt[1]-Math.round(16*density)+2);
-            assertTrue("Narrow right-side dock is at most 300dp",dock.getWidth()<=Math.round(300*density)+2);
-            assertTrue("No full-screen sheet",dock.getWidth()<((View)field(a,"playerRoot")).getWidth());
-            ScrollView list=(ScrollView)description(dock,"Episode list");assertNotNull(list);assertTrue("At least one usable episode row remains in short landscape",list.getHeight()>=Math.round(44*density));
+            int[] at=new int[2];dock.getLocationOnScreen(at);View root=(View)field(a,"playerRoot");
+            assertTrue("Shared mobile sheet stays inside screen",at[1]>=0&&at[1]+dock.getHeight()<=a.getResources().getDisplayMetrics().heightPixels+2);
+            assertTrue("Sheet is content-sized, not a full-height TV dock",dock.getHeight()<root.getHeight()*.86f);
+            assertTrue("Shared landscape sheet caps width at 440dp",dock.getWidth()<=Math.round(440*density)+2);
             View close=description(dock,"Close Seasons & episodes");assertNotNull(close);assertTrue(close.getHeight()>=Math.round(48*density));
-            assertNotNull(description(dock,"Browsing keeps playback running"));assertNull("Unavailable sparse episode numbers are not invented",description(dock,"Play season 1 episode 3"));
-            WindowManager.LayoutParams attrs=dialog.getWindow().getAttributes();assertEquals(0,attrs.flags&WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            View current=description(dock,"Play season 1 episode 1, current");assertNotNull(current);assertTrue("Same 50dp choice rows as Quality",current.getHeight()>=Math.round(50*density)-2);
+            assertNotNull(description(dock,"Show season 2"));assertNull("Sparse episode numbers are preserved",description(dock,"Play season 1 episode 3"));
+            WindowManager.LayoutParams attrs=dialog.getWindow().getAttributes();assertNotEquals(0,attrs.flags&WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             assertTrue("Movie continues beneath the dock",((ExoPlayer)field(a,"player")).isPlaying());
         });
     }
@@ -63,7 +62,7 @@ public class EpisodeDockScenarios {
     }
     @Test public void outsideTapDismissesWithoutPausingUnderlyingVideo()throws Exception{
         SliderPlaybackScenarios.Local service=new SliderPlaybackScenarios.Local();try(ActivityScenario<PhoneActivity> scenario=start(service)){
-            open(scenario);final int[] point={0,0};main(scenario,a->{View root=(View)field(a,"playerRoot");int[] at=new int[2];root.getLocationOnScreen(at);point[0]=at[0]+8;point[1]=at[1]+root.getHeight()/2;});
+            open(scenario);final int[] point={0,0};main(scenario,a->{View root=(View)field(a,"playerRoot");int[] at=new int[2];root.getLocationOnScreen(at);point[0]=at[0]+8;point[1]=at[1]+Math.round(60*a.getResources().getDisplayMetrics().density);});
             long now=SystemClock.uptimeMillis();MotionEvent down=MotionEvent.obtain(now,now,MotionEvent.ACTION_DOWN,point[0],point[1],0),up=MotionEvent.obtain(now,now+30,MotionEvent.ACTION_UP,point[0],point[1],0);
             try{InstrumentationRegistry.getInstrumentation().sendPointerSync(down);InstrumentationRegistry.getInstrumentation().sendPointerSync(up);}finally{down.recycle();up.recycle();}Thread.sleep(200);
             main(scenario,a->assertFalse((Boolean)field(a,"drawerOpen")));assertTrue("Dismissal does not toggle the player",playing(scenario));
