@@ -6,7 +6,10 @@ The installed app is named **MovieBox**.
 
 [Download the latest APK](https://github.com/emransm877/moviebox-android-native/releases/latest) | [All MovieBox projects](https://emransm877.github.io/moviebox-projects/) | [Report a problem](https://github.com/emransm877/moviebox-android-native/issues)
 
-<img src="docs/images/native-home.png" alt="The native MovieBox Android App home screen on the maintainer's phone" width="280">
+<img src="docs/images/native-home.png" alt="MovieBox Android App 0.1.1 build 4 home screen on an Android 17 phone" width="280">
+<img src="docs/images/native-icons.png" alt="Transparent icon choices in MovieBox Android App 0.1.1 build 4" width="280">
+
+Actual 0.1.1 build 4 captures from the maintainer's Android 17 phone.
 
 ## Get started
 
