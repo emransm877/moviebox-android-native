@@ -2,10 +2,10 @@
 
 ## Version 0.1.1
 
-Version 0.1.1 (version code 3) uses the existing signing identity. Release build and debug/instrumentation compilation passed, together
+Version 0.1.1 (version code 4) uses the existing signing identity. Release build and debug/instrumentation compilation passed, together
 with 29 release unit tests and lint (zero errors, 89 warnings).
 
-The exact version-0.1.1 APK passed 127 scoped scenarios in one combined Android 17 physical-phone run (173.061 seconds, zero failures). These cover navigation and stale search, metadata refresh, artwork fallback/cache, controlled source recovery, playback, subtitles/audio, gestures, accessibility, library backup/recovery, controlled downloads, Continue watching and isolated update metadata. The same-signer in-place update preserved app data and settings; the temporary test package was removed. Exact artifact identity is in [release validation](releases/0.1.1-validation.json).
+The exact version-0.1.1 APK passed 131 scoped scenarios in one combined Android 17 physical-phone run (174.119 seconds, zero failures). These cover navigation and stale search, metadata refresh, artwork fallback/cache, controlled source recovery, playback, subtitles/audio, gestures, accessibility, library backup/recovery, controlled downloads, Continue watching and isolated update metadata. The same-signer in-place update preserved app data and settings; the temporary test package was removed. Exact artifact identity is in [release validation](releases/0.1.1-validation.json).
 
 Instrumentation fixtures isolate library data where provided. Fake download
 backends and injected update metadata do not perform production downloads or

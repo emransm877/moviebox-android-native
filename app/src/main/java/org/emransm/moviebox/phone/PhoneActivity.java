@@ -104,13 +104,13 @@ public class PhoneActivity extends Activity {
     private void addButton(LinearLayout parent,Button button){LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-2,dp(48));lp.setMargins(0,0,dp(8),0);parent.addView(button,lp);}
     private void applyTheme(){bg=0xff101114;panel=0xff25262a;surface=0xff191a1e;ink=0xfff5f5f5;accent=0xff2feda1;secondary=0xffadb0b6;selectionColor=0xff214436;heroColor=0xff101114;themeKey="obsidian";themeName="MovieBox";themeLayout="phone";}
 
-    private ImageView brandLogo(){ImageView image=new ImageView(this);image.setScaleType(ImageView.ScaleType.FIT_CENTER);image.setImageResource(AppLogos.preview(this));return image;}
+    private ImageView brandLogo(){ImageView image=new ImageView(this);image.setScaleType(ImageView.ScaleType.FIT_CENTER);image.setImageDrawable(AppLogos.drawable(this));return image;}
 
     private void appShell(String heading){
         if(artworkLoader!=null)artworkLoader.clearTargets();if(heroHeader!=null)heroHeader.stop();heroHeader=null;root.removeAllViews();grid=null;activeBrowseKey=null;bottomNav=null;immersive();
         shell=column();root.addView(shell,new FrameLayout.LayoutParams(-1,-1));
         if(heading.equals("Discover")){
-            LinearLayout top=row();top.setPadding(dp(16),dp(8),dp(16),dp(8));top.addView(brandLogo(),new LinearLayout.LayoutParams(dp(30),dp(48)));
+            LinearLayout top=row();top.setPadding(dp(16),dp(8),dp(16),dp(8));top.addView(brandLogo(),new LinearLayout.LayoutParams(dp(40),dp(48)));
             Button search=button("Search movies and TV shows","Search catalogue",()->browse("Search"));search.setCompoundDrawables(new NavIcon("Search",secondary,dp(18)),null,null,null);search.setCompoundDrawablePadding(dp(10));search.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);search.setTextColor(secondary);search.setSingleLine(false);search.setMaxLines(2);search.setPadding(dp(12),dp(8),dp(12),dp(8));LinearLayout.LayoutParams searchLp=new LinearLayout.LayoutParams(0,-2,1);searchLp.leftMargin=dp(12);top.addView(search,searchLp);shell.addView(top);
         }else if(!heading.equals("Search")){
             LinearLayout header=row();header.setPadding(dp(12),dp(6),dp(16),dp(6));boolean detail=heading.equals("Details");

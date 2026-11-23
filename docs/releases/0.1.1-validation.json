@@ -1,15 +1,19 @@
 {
   "version": "0.1.1",
-  "versionCode": 3,
-  "sha256": "e8c527f2b34501a1cef90419e8a885f5b0f9d2b8cfbf8ed38708e11017ee7c3f",
-  "phoneScenarios": 127,
-  "seconds": 173.061,
+  "versionCode": 4,
+  "sha256": "45766cbb32c035ce19847d9f613a6fb55d8e4b067bb2ad356f7fd6b8af755ebd",
+  "bytes": 7404345,
+  "phoneScenarios": 131,
+  "seconds": 174.119,
   "unitTests": 29,
   "lintErrors": 0,
   "lintWarnings": 89,
   "inPlaceUpdate": true,
+  "installedSha256Matches": true,
   "dataNotCleared": true,
   "settingsRestored": true,
   "testApkRemoved": true,
-  "mainRelaunched": true
+  "mainRelaunched": true,
+  "minimumOsRuntimeNotRetested": true,
+  "launcherBackgroundLimit": "OEM launchers may add their own shape/background."
 }

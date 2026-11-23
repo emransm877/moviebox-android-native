@@ -48,7 +48,7 @@ Title availability, artwork, languages, subtitles and actual qualities depend on
 the external service. Network errors, expired links or missing tracks can occur.
 A source without 720p cannot honestly be relabeled as 720p.
 
-Version 0.1.1 passed 127 scoped scenarios on one Android 17 phone after a same-signer in-place update. Its 29 unit tests passed; lint reports zero errors and 89 warnings. Android 6 emulator checks apply to earlier builds, not this exact APK. These results do not guarantee every phone, decoder, launcher or Android version.
+Version 0.1.1 passed 131 scoped scenarios on one Android 17 phone after a same-signer in-place update. Its 29 unit tests passed; lint reports zero errors and 89 warnings. Android 6 emulator checks apply to earlier builds, not this exact APK. These results do not guarantee every phone, decoder, launcher or Android version.
 See [validation scope](docs/VALIDATION.md), [privacy](docs/PRIVACY.md),
 [installation help](docs/INSTALLATION.md) and [security](SECURITY.md).
 
