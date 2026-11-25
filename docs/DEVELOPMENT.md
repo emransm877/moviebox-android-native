@@ -28,3 +28,5 @@ release notes and known limits, then upload the approved APK and checksum togeth
 
 See [fixture provenance and explicit skips](TEST_FIXTURES.md) before running
 instrumentation. A compilation pass is not a captured-art scenario pass.
+
+The instrumentation component is `org.emransm.moviebox.phone.test/org.emransm.moviebox.phone.OwnedQaRunner`. It isolates automatic update metadata checks from the public GitHub quota, snapshots optional-update preferences and restores them after QA. Use a disposable emulator for destructive or upgrade probes. Public source omits the private future-APK fixture; those archive scenarios explicitly skip when it is absent. Metadata-only prompt/cooldown scenarios still run without it.

@@ -24,12 +24,20 @@ public class AudioLabelsTest {
     @Test public void duplicateNamesStayDistinctAndKeepStableIndices(){
         assertEquals(Arrays.asList("English \u00b7 Track 1","English \u00b7 Track 2","Commentary"),AudioLabels.names(Arrays.asList(null,"English","Commentary"),Arrays.asList("en","en","en"),Locale.ENGLISH));
     }
-    @Test public void malformedLanguageFallsBackAndSeparateEditionIsExplicit(){
+    @Test public void malformedLanguageFallsBackWithoutImplementationJargon(){
         assertEquals(Collections.singletonList("Audio track 1"),AudioLabels.names(Collections.singletonList(null),Collections.singletonList("not a tag"),Locale.ENGLISH));
-        assertEquals("Audio track 3 \u00b7 Separate edition",AudioLabels.editionName("und",null,3,Locale.ENGLISH));
+        assertEquals("Audio track 3",AudioLabels.editionName("und",null,3,Locale.ENGLISH));
         assertTrue(AudioLabels.editionName(null,"fr-CA",1,Locale.ENGLISH).contains("Canada"));
     }
     @Test public void displayLocaleIsHonoredWithoutChangingTrackOrder(){
         List<String> labels=AudioLabels.names(Arrays.asList(null,null),Arrays.asList("fr","de"),Locale.FRENCH);assertTrue(labels.get(0).toLowerCase(Locale.ROOT).startsWith("fran"));assertTrue(labels.get(1).toLowerCase(Locale.ROOT).startsWith("allemand"));
+    }
+    @Test public void verifiedProviderAliasesUseHumanNamesAndPreserveUnknownLabels(){
+        assertEquals("Spanish (Latin America)",AudioLabels.editionName("esla dub","esla",1,Locale.ENGLISH));
+        assertEquals("Portuguese (Brazil)",AudioLabels.editionName("ptbr dub","ptbr",2,Locale.ENGLISH));
+        assertEquals("Original audio",AudioLabels.editionName("Original Audio","und",1,Locale.ENGLISH));
+        assertEquals("Spanish (Latin America)",AudioLabels.editionName(null,"esla",1,Locale.ENGLISH));
+        assertEquals("Commentary special",AudioLabels.editionName("Commentary special","xx",1,Locale.ENGLISH));
+        assertEquals("Audio track 4",AudioLabels.editionName(null,"xx",4,Locale.ENGLISH));
     }
 }

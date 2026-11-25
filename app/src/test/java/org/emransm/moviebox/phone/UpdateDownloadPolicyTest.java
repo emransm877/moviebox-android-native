@@ -1,0 +1,10 @@
+package org.emransm.moviebox.phone;
+import org.junit.Test;
+import java.util.*;
+import static org.junit.Assert.*;
+public class UpdateDownloadPolicyTest {
+    static final String HASH="sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    @Test public void requiresBoundedSizeAndExactHashMetadata(){assertTrue(UpdateDownloadPolicy.metadata(1,HASH));assertTrue(UpdateDownloadPolicy.metadata(UpdateDownloadPolicy.MAX_BYTES,HASH));for(long size:new long[]{-1,0,UpdateDownloadPolicy.MAX_BYTES+1,Long.MAX_VALUE})assertFalse(UpdateDownloadPolicy.metadata(size,HASH));for(String hash:new String[]{null,"","sha256:a",HASH+"a",HASH.replace('a','x'),HASH.replace("sha256:","md5:")})assertFalse(UpdateDownloadPolicy.metadata(20,hash));}
+    @Test public void redirectsStayOnExplicitHttpsAssetHosts(){assertTrue(UpdateDownloadPolicy.redirect("https://github.com/path"));assertTrue(UpdateDownloadPolicy.redirect("https://release-assets.githubusercontent.com/asset?signature=owned"));for(String url:new String[]{"http://github.com/a","https://github.com.invalid.test/a","https://evil.invalid/a","https://user@github.com/a","https://github.com:444/a","https://github.com/a#fragment","file:///a"})assertFalse(UpdateDownloadPolicy.redirect(url));}
+    @Test public void identityRequiresExactPackageVersionAndCurrentSignerSet(){Set<String> current=new HashSet<>(Arrays.asList("signer"));assertTrue(UpdateDownloadPolicy.identity("own.package","own.package","0.1.5","0.1.5",7,8,current,current));assertFalse(UpdateDownloadPolicy.identity("own.package","other.package","0.1.5","0.1.5",7,8,current,current));assertFalse(UpdateDownloadPolicy.identity("own.package","own.package","0.1.5","0.1.4",7,8,current,current));assertFalse(UpdateDownloadPolicy.identity("own.package","own.package","0.1.5","0.1.5",8,8,current,current));assertFalse(UpdateDownloadPolicy.identity("own.package","own.package","0.1.5","0.1.5",7,8,current,Collections.singleton("other")));assertFalse(UpdateDownloadPolicy.identity("own.package","own.package","0.1.5","0.1.5",7,8,Collections.emptySet(),Collections.emptySet()));}
+}

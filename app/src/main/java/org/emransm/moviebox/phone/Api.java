@@ -144,6 +144,12 @@ public class Api {
         if(requestedFamily!=familyMode)return Collections.emptyList();
         return WatchRecommendations.parse(response,subjectId,requestedFamily);
     }
+    public WatchRecommendations.Page recommendationsPage(String subjectId,int page)throws Exception{
+        JSONObject body=WatchRecommendations.requestBody(subjectId,page,WatchRecommendations.PAGE_SIZE);boolean requestedFamily=familyMode;
+        warm();Object response=request("/subject-api/play-related-rec",args("host",NATIVE),body,true);
+        if(requestedFamily!=familyMode)return new WatchRecommendations.Page(subjectId,requestedFamily,page,Collections.emptyList(),false,0);
+        return WatchRecommendations.parsePage(response,subjectId,requestedFamily,page);
+    }
     public List<String> suggest(String keyword) throws Exception {warm();Object response=request("/subject-api/search-suggest",args("keyword",keyword,"perPage",20,"resultMode",2),null,true);List<String> result=new ArrayList<>();for(JSONObject item:items(response)){if(familyMode&&AdultContentPolicy.markedAdult(item))continue;String text=item.optString("word",item.optString("title",item.optString("keyword")));if(!text.isEmpty())result.add(text);if(result.size()>=20)break;}return result;}
     /** Memory-only lookup is safe on the UI thread. Disk and network run in detail(). */
     public JSONObject cachedDetail(String id){return cachedDetail(id,UiCache.DETAIL_AGE_MS);}

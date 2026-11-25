@@ -17,9 +17,13 @@ public final class AudioLabels {
         for(int i=0;i<labels.size();i++){String name=name(labels.get(i),languages.get(i),i+1,display);out.add(name);String key=name.toLowerCase(Locale.ROOT);Integer previous=counts.get(key);counts.put(key,previous==null?1:previous+1);}
         for(int i=0;i<out.size();i++){String name=out.get(i);if(counts.get(name.toLowerCase(Locale.ROOT))>1)out.set(i,name+" \u00b7 Track "+(i+1));}return out;
     }
-    public static String editionName(String label,String language,int ordinal,Locale displayLocale){return name(label,language,Math.max(1,ordinal),displayLocale==null?Locale.getDefault():displayLocale)+" \u00b7 Separate edition";}
+    public static String editionName(String label,String language,int ordinal,Locale displayLocale){return name(label,language,Math.max(1,ordinal),displayLocale==null?Locale.getDefault():displayLocale);}
     private static String name(String label,String language,int ordinal,Locale display){
         String supplied=clean(label);
+        String alias=supplied.toLowerCase(Locale.ROOT).replaceFirst("\\s+dub$", "");
+        if(alias.equals("esla"))return "Spanish (Latin America)";
+        if(alias.equals("ptbr"))return "Portuguese (Brazil)";
+        if(supplied.equalsIgnoreCase("Original Audio"))return "Original audio";
         if(!UNKNOWN.contains(supplied.toLowerCase(Locale.ROOT))){
             // A raw language code is metadata, rather than a useful human label.
             if(supplied.matches("[a-z]{2,3}([_-][A-Za-z0-9]{2,8})*")){String translated=languageName(supplied,display);if(translated!=null)return translated;}
@@ -29,6 +33,7 @@ public final class AudioLabels {
     }
     private static String clean(String text){return text==null?"":text.trim();}
     private static String languageName(String raw,Locale display){
+        String alias=clean(raw).toLowerCase(Locale.ROOT);if(alias.equals("esla"))return "Spanish (Latin America)";if(alias.equals("ptbr"))return "Portuguese (Brazil)";
         String code=clean(raw).replace('_','-');if(UNKNOWN.contains(code.toLowerCase(Locale.ROOT)))return null;
         try{
             Locale locale=new Locale.Builder().setLanguageTag(code).build();String language=locale.getLanguage();

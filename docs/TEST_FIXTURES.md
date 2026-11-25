@@ -29,3 +29,11 @@ The home screenshot is a genuine application capture supplied for project
 documentation. Visible catalogue artwork belongs to its respective owners and is
 not offered as MIT-licensed artwork. Generated launcher concepts are separate
 project assets; use of the MovieBox name does not establish trademark ownership.
+
+## 0.1.4 update and visual fixtures
+
+The seven release-poster-0..5.png / release-banner.png images are independently authored sample artwork, not service catalogue art or private phone captures. OwnedQaArtwork supplies a minimal local copy helper; the private campaign recorder is omitted. Visual tests use those cached images and generated media.
+
+qa-update-future.apk is intentionally absent from this source tree. Download/archive-policy scenarios use a locally supplied owned future APK signed with the same identity as the installed test target, and explicitly skip when it is absent. Never copy production keys or a private future APK into a public source archive. Metadata-only prompt/cooldown scenarios use owned bytes and do not need that APK. No test fetches a real GitHub APK.
+
+OwnedQaRunner snapshots optional-update preferences, disables automatic release checks before every test Activity, then restores the exact original preferences on completion (or recovers the snapshot on the next QA run after interruption). Explicit update tests inject metadata/checkers/transfers instead of spending the shared unauthenticated GitHub API quota.

@@ -1,5 +1,13 @@
 # Validation scope
 
+## Version 0.1.4
+
+See [0.1.4 scope](releases/0.1.4.md) and [artifact manifest](releases/0.1.4-validation.json). The exact signed APK passed release build/lint, 46 unit tests and 105 Android6/API23 emulator scenarios. Thirteen fresh visual scenarios and one tutorial-free landscape case passed on the same production APK; independent HQ and owner visual review passed.
+
+The exact published 0.1.3 APK was seeded on a disposable emulator and updated in place to this exact 0.1.4 APK with the retained signer. List, progress, audio/subtitle preferences and recent search survived. This is a real Android installation/update test, not a live GitHub download or owner-phone update. The owner phone remains on 0.1.3. Modern platform Back gestures, Android8+ install-permission UI and broader physical0.1.4 behavior remain unverified.
+
+QA uses owned metadata/media, a private signed future-APK fixture that was never installed, and actual native screenshots. An earlier capture harness stalled while cleaning up an animated spinner; the corrected test-only harness passed the complete105-case run. Raw SurfaceFlinger screenshots and first-use tutorial dismissal corrected capture artifacts without editing pixels or changing production code. Public source omits the private APK fixture and campaign recorder; archive scenarios explicitly skip when that fixture is absent.
+
 ## Version 0.1.3
 
 See [0.1.3 release scope](releases/0.1.3.md) and its [candidate manifest](releases/0.1.3-validation.json). The signed production APK passed 38 release unit tests, build/lint, 72 combined Android 6/API 23 emulator scenarios and one additional stable portrait/landscape scenario. Independent HQ review covered the applicable implementation, test evidence and final visuals.

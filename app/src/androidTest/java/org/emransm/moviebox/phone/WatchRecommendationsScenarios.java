@@ -55,6 +55,7 @@ public class WatchRecommendationsScenarios {
         class Local extends SliderPlaybackScenarios.Local {
             volatile String requested="";Local()throws Exception{}
             @Override public List<JSONObject> recommendations(String id)throws Exception{requested=id;return id.equals("qa-rec-first")?java.util.Collections.singletonList(BlockFlowScenarios.title("qa-rec-second",1)):java.util.Collections.emptyList();}
+            @Override public WatchRecommendations.Page recommendationsPage(String id,int page)throws Exception{return new WatchRecommendations.Page(id,false,page,page==1?recommendations(id):java.util.Collections.emptyList(),false,0);}
         }
         Local service=new Local();try(ActivityScenario<PhoneActivity> scenario=ActivityScenario.launch(PhoneActivity.class)){
             BlockFlowScenarios.isolate(scenario,service);main(scenario,a->call(a,"openDetail",new Class[]{JSONObject.class,boolean.class},BlockFlowScenarios.title("qa-rec-first",1),true));

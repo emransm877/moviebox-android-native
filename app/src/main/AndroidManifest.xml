@@ -2,6 +2,7 @@
  <uses-permission android:name="android.permission.INTERNET" />
  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+ <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
  <application android:label="MovieBox" android:icon="@mipmap/phone_launcher" android:roundIcon="@mipmap/phone_launcher_round" android:theme="@style/AppTheme" android:allowBackup="false" android:usesCleartextTraffic="false" android:supportsRtl="true">
   <activity android:name=".PhoneActivity" android:exported="true" android:windowSoftInputMode="adjustResize" android:configChanges="keyboard|keyboardHidden|screenSize|orientation">
   </activity>
@@ -38,5 +39,8 @@
   <activity-alias android:name=".Launcher10" android:targetActivity=".PhoneActivity" android:exported="true" android:enabled="false" android:label="MovieBox" android:icon="@mipmap/app_logo_10">
    <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
   </activity-alias>
+  <provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.updates" android:exported="false" android:grantUriPermissions="true">
+   <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/update_file_paths" />
+  </provider>
  </application>
 </manifest>

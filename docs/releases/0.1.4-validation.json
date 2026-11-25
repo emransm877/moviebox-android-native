@@ -1,0 +1,68 @@
+{
+  "project": "MovieBox Android App",
+  "version": "0.1.4",
+  "version_code": 7,
+  "status": "LOCAL_REVIEWED_CANDIDATE_NOT_PUBLISHED",
+  "package": "org.emransm.moviebox.phone",
+  "artifact": {
+    "filename": "MovieBox-Android-App-0.1.4.apk",
+    "bytes": 7439917,
+    "sha256": "d23fa38815e9862f333621481e4152b3ff40dd38f6fd4b0476a4ae7bc62fb4d8",
+    "public_signer_sha256": "a9213dcf85e0d6b8229cec0d9dea4d928923c4f65f21d917a9205ac601a9030e"
+  },
+  "toolchain": {
+    "jdk": 17,
+    "compile_sdk": 36,
+    "target_sdk": 35,
+    "minimum_sdk": 23,
+    "media3": "1.8.1"
+  },
+  "checks": {
+    "release_build": "PASS",
+    "release_lint": "PASS",
+    "release_unit_tests": {
+      "status": "PASS",
+      "count": 46,
+      "failures": 0
+    },
+    "combined_runtime": {
+      "status": "PASS",
+      "count": 105,
+      "seconds": 202.306,
+      "environment": "Android6/API23 disposable emulator, signed release, owned media/metadata"
+    },
+    "fresh_visual_runtime": {
+      "status": "PASS",
+      "count": 13,
+      "seconds": 82.511
+    },
+    "tutorial_free_landscape": {
+      "status": "PASS",
+      "count": 1,
+      "seconds": 10.639
+    },
+    "same_signer013_to014_upgrade": {
+      "status": "PASS",
+      "baseline_sha256": "12680df3240ddf9c91eb2b39c02bc991856946c1a5007f9b5c2d16bf01dd9633",
+      "candidate_sha256": "d23fa38815e9862f333621481e4152b3ff40dd38f6fd4b0476a4ae7bc62fb4d8",
+      "preserved": [
+        "list",
+        "progress",
+        "audio preference",
+        "subtitle preference",
+        "recent query"
+      ],
+      "environment": "Disposable emulator only"
+    },
+    "independent_HQ": "PASS scoped source/design/API23 evidence",
+    "owner_visual_review": "PASS",
+    "physical014_owner_update": "UNVERIFIED; owner phone remains013; no agent installation",
+    "modern_android_OS_gestures": "UNVERIFIED physical platform behavior; boundary logic exercised in emulator",
+    "Android8_plus_install_permission_UI": "UNVERIFIED",
+    "all_device_compatibility": "UNVERIFIED",
+    "complete_upstream_parity": "UNVERIFIED"
+  },
+  "verification_release_asset_GET_HEAD": 0,
+  "private_future_fixture": "Not published or installed; public source intentionally omits it",
+  "public_source_status": "Curated preparation; source commit/archive/publication identity to be supplied by publisher"
+}

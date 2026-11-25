@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.4 - 2026-11-26
+
+- Align portrait resource controls and keep season/episode choices in one compact row.
+- Remove full-width player header shading; preserve safe edges and 48dp controls.
+- Protect Android system-edge Back gestures from in-player seeking.
+- Use readable audio language names and append title-specific recommendations up to 50 real unique results when the service supplies them.
+- Remove the Home carousel Pause control while retaining automatic rotation and navigation; refine Categories spacing.
+- Give Me's update row immediate pressed/checking feedback. Offer optional Update/Later prompts each cold launch when a verified newer release is cached.
+- Download an update inside the app only after an explicit Update tap, show progress/cancel, then require a separate Install tap and Android confirmation.
+- Verify download size, SHA-256, package, newer version and installed signing identity; revalidate before installation off the UI thread.
+- Persist GitHub rate-limit/retry deadlines and keep update failures distinct from an up-to-date result. QA startup checks no longer consume the public metadata quota.
+
+Checked scope: 46 release unit tests, lint/build and 105 API23 emulator scenarios; 13 fresh visual scenarios plus one tutorial-free landscape check; exact published 0.1.3-to-0.1.4 same-signer emulator data preservation. Independent HQ and owner visual review passed. Physical 0.1.4 installation/playback, modern OS edge gestures and the Android 8+ install-permission UI remain unverified. See [0.1.4 scope](docs/releases/0.1.4.md).
+
 ## 0.1.3 — 2026-11-25
 
 - Keep the portrait watch preview full width while sources load, and use compact player controls.

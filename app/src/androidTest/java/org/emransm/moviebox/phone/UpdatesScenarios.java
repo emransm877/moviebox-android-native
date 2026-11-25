@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 import static org.emransm.moviebox.phone.PhoneMediaScenarios.*;
 @RunWith(AndroidJUnit4.class)
 public class UpdatesScenarios {
- JSONObject release(String url)throws Exception{return new JSONObject().put("assets",new JSONArray().put(new JSONObject().put("name","MovieBox-Android-App-0.2.0.apk").put("size",1234).put("browser_download_url",url)));}
+ JSONObject release(String url)throws Exception{return new JSONObject().put("assets",new JSONArray().put(new JSONObject().put("name","MovieBox-Android-App-0.2.0.apk").put("size",1234).put("digest","sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa").put("browser_download_url",url)));}
  @Test public void onlyNativeProjectsCompleteStableApkCanBeOffered()throws Exception{
   String good="https://github.com/emransm877/moviebox-android-native/releases/download/v0.2.0/MovieBox-Android-App-0.2.0.apk";assertEquals(good,Updates.apk(release(good)));for(String url:new String[]{good.replace("https:","http:"),good.replace("github.com","github.com.invalid.test"),good.replace("moviebox-android-native","moviebox-android-tv")})assertEquals("",Updates.apk(release(url)));assertEquals("",Updates.apk(release(good).put("prerelease",true)));assertEquals("",Updates.apk(release(good).put("draft",true)));JSONObject empty=release(good);empty.getJSONArray("assets").getJSONObject(0).put("size",0);assertEquals("",Updates.apk(empty));
  }
