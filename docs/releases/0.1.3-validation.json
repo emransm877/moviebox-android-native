@@ -1,0 +1,69 @@
+{
+  "project": "MovieBox Android App",
+  "version": "0.1.3",
+  "version_code": 6,
+  "status": "SCOPED_LOCAL_QA_PASSED",
+  "package": "org.emransm.moviebox.phone",
+  "artifact": {
+    "filename": "MovieBox-Android-App-0.1.3.apk",
+    "bytes": 7424219,
+    "sha256": "12680df3240ddf9c91eb2b39c02bc991856946c1a5007f9b5c2d16bf01dd9633",
+    "public_signer_sha256": "a9213dcf85e0d6b8229cec0d9dea4d928923c4f65f21d917a9205ac601a9030e"
+  },
+  "toolchain": {
+    "jdk": 17,
+    "compile_sdk": 36,
+    "target_sdk": 35,
+    "minimum_sdk": 23,
+    "media3": "1.8.1"
+  },
+  "checks": {
+    "release_unit_tests": {
+      "status": "PASS",
+      "count": 38,
+      "failures": 0
+    },
+    "release_build": "PASS",
+    "release_lint": "PASS",
+    "combined_runtime": {
+      "status": "PASS",
+      "count": 72,
+      "seconds": 109.437,
+      "environment": "Android 6/API23 emulator; signed release APK; controlled metadata and owned sample media"
+    },
+    "additional_visual_runtime": {
+      "status": "PASS",
+      "count": 1,
+      "seconds": 5.157,
+      "environment": "Same production APK; stable portrait and landscape emulator capture"
+    },
+    "independent_hq": "PASS for the recorded scoped implementation, runtime and visual evidence",
+    "physical_install_and_in_app_update": "UNVERIFIED; owner reserved the real update test",
+    "complete_upstream_parity": "UNVERIFIED",
+    "all_device_compatibility": "UNVERIFIED",
+    "same_signer_emulator_upgrade": {
+      "status": "PASS",
+      "baseline_version": "0.1.2",
+      "baseline_sha256": "23721d1b3538cf212c7e618a464d5c7adfdcc4698a0c5dad399ca7dae7e7f718",
+      "candidate_sha256": "12680df3240ddf9c91eb2b39c02bc991856946c1a5007f9b5c2d16bf01dd9633",
+      "seed": "PASS",
+      "install_update": "PASS",
+      "saved_list_progress_audio_subtitle_recent_search": "PASS",
+      "physical_phone_changed": false
+    }
+  },
+  "captures": [
+    {
+      "file": "../images/0.1.3-qa-comingsoon-portrait.png",
+      "sha256": "eea54aa39509ac3f6545472d9d803377dced4a870719c3e237c33731861dd5cb",
+      "description": "Actual current APK emulator UI; synthetic upcoming title; not live catalogue or phone evidence"
+    },
+    {
+      "file": "../images/0.1.3-qa-comingsoon-landscape.png",
+      "sha256": "17f5df75293f50ef8d54e7d042488411dd367400503e41ae78bb15489f8257b5",
+      "description": "Actual current APK emulator UI after rotation settles; synthetic metadata"
+    }
+  ],
+  "publication": "Public release receipts and live checks are recorded separately; local QA does not prove publication or the owner physical update",
+  "release_ready": false
+}

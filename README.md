@@ -9,9 +9,9 @@ The installed app is named **MovieBox**.
 <img src="docs/images/native-home.png" alt="MovieBox Android App 0.1.1 build 4 home screen on an Android 17 phone" width="280">
 <img src="docs/images/native-icons.png" alt="Transparent icon choices in MovieBox Android App 0.1.1 build 4" width="280">
 
-Historical 0.1.1 build 4 captures from the maintainer's Android 17 phone. The latest 0.1.2 portrait layout has changed; these images are not current-build captures.
+Historical 0.1.1 build 4 captures from the maintainer's Android 17 phone. The 0.1.3 layout has changed; these images are not current-build captures.
 
-**Latest: 0.1.2 (build 5).** [Changes and exact validation scope](docs/releases/0.1.2.md).
+**Version 0.1.3 (build 6).** [Changes and exact validation scope](docs/releases/0.1.3.md).
 
 ## Get started
 
@@ -35,6 +35,10 @@ signing identity to preserve its library. Uninstalling deletes private app data.
 - Download supported single-file videos for local playback. New downloads use Wi-Fi unless you explicitly allow mobile data for that file.
 - Choose your appearance and one of ten additional launcher icons under **Me -> App icon**.
 - Check for optional updates under **Me -> Check for updates**. Successful automatic checks are spaced twelve hours apart; failed checks can be retried. Updates are never forced or installed silently.
+- Keep the chosen audio edition when retrying playback or changing episodes after a source failure.
+- See **Coming soon** for a confirmed unavailable movie, with an explicit availability recheck. Connection and authorization failures remain retryable.
+
+The 0.1.3 update removes the native app's 18+ restriction and its Settings switch. It does not include a parental-control guarantee.
 
 ## Android App or Android patch?
 
@@ -53,7 +57,12 @@ Title availability, artwork, languages, subtitles and actual qualities depend on
 the external service. Network errors, expired links or missing tracks can occur.
 A source without 720p cannot honestly be relabeled as 720p.
 
-Version 0.1.2 passed 35 release unit tests, 53 scoped Android 6 emulator scenarios and eight updater scenarios, plus two in-place-update probes. Physical-phone testing of 0.1.2 is pending the owner's update test.
+Version 0.1.3 passed 38 release unit tests, build and lint, 72 combined signed Android 6/API 23 emulator scenarios and one additional portrait/landscape visual scenario. A same-signer emulator update from the exact published 0.1.2 APK preserved the saved list, progress, audio/subtitle preferences and recent searches. These scenarios use owned media and controlled metadata. Physical installation and the owner's in-app update test remain pending; exact upstream feature/UI parity and universal compatibility are not claimed.
+
+<img src="docs/images/0.1.3-qa-comingsoon-portrait.png" alt="Actual MovieBox 0.1.3 Android 6 emulator UI with an owned synthetic upcoming-title fixture; not a live catalogue or phone capture" width="220">
+<img src="docs/images/0.1.3-qa-comingsoon-landscape.png" alt="Actual MovieBox 0.1.3 landscape Android 6 emulator UI with the same owned availability fixture" width="480">
+
+These current-build QA captures show the real app rendering synthetic metadata in an emulator. The older home/icon pictures above remain explicitly historical 0.1.1 phone captures.
 
 Historically, version 0.1.1 passed 131 scoped scenarios on one Android 17 phone after a same-signer in-place update. Its 29 unit tests passed; lint reports zero errors and 89 warnings. That historical 0.1.1 result did not include exact-build Android 6 emulator coverage. These results do not guarantee every phone, decoder, launcher or Android version.
 See [validation scope](docs/VALIDATION.md), [privacy](docs/PRIVACY.md),

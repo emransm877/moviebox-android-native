@@ -35,3 +35,9 @@ URLs or screenshots containing personal data.
 ## Recent searches
 
 Version0.1.2 stores recent search queries locally when Save recent searches is enabled. Clear them or disable saving under Me. Clearing recent queries does not remove My list or watch history. Search terms submitted to the catalogue are still sent to its external service.
+
+## Availability and content preferences in 0.1.3
+
+Version 0.1.3 removes the 18+ restriction and its Settings switch. The native client no longer applies that family-mode filter. This does not change the external service's access rules or guarantee that all titles can play.
+
+For confirmed unavailable movies, the display cache may retain a small subject-bound availability state. It does not store the guest session, media address or detector context. An explicit availability recheck requests sources again; cached display state does not prevent newly available playback. Related-title requests send the current title identifier to the catalogue service.

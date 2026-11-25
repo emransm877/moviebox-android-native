@@ -1,8 +1,8 @@
 # Installation and updates
 
 Download the APK from this repository's Releases page, not the separate Android
-patch or Android TV project. The 0.1.2 candidate filename is
-`MovieBox-Android-App-0.1.2.apk`; installed label MovieBox; package
+patch or Android TV project. The 0.1.3 filename is
+`MovieBox-Android-App-0.1.3.apk`; installed label MovieBox; package
 `org.emransm.moviebox.phone`; Android 6/API 23 minimum.
 
 If Android blocks installation, check free space and the browser/file-manager
@@ -16,6 +16,8 @@ checks can be retried. Reminders respect their setting and dismissal, wait durin
 playback, and open an available release link. A new GitHub commit alone is not an app update:
 a newer complete stable APK must be published. There is no forced upgrade or silent
 installation.
+
+Version 0.1.3 uses the existing package and signing certificate. Its physical in-app update test remains pending. A locally built APK or new source commit will not appear in the updater: the matching complete, non-draft, non-prerelease GitHub release must be published first.
 
 Before an update, you can use **Me -> Back up library** to save your list and
 progress. Restoring a backup previews a merge before you confirm. Downloaded

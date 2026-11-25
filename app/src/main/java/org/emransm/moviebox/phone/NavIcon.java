@@ -10,6 +10,9 @@ final class NavIcon extends Drawable {
     public int getIntrinsicWidth(){return size;}public int getIntrinsicHeight(){return size;}
     @Override public void draw(Canvas canvas){canvas.save();canvas.translate(getBounds().left,getBounds().top);canvas.scale(getBounds().width()/24f,getBounds().height()/24f);Path path=new Path();
         switch(name){
+            case "Play":path.moveTo(7,4);path.lineTo(20,12);path.lineTo(7,20);path.close();break;
+            case "Pause":canvas.drawLine(8,4,8,20,pen);canvas.drawLine(16,4,16,20,pen);break;
+            case "Fullscreen":path.moveTo(3,9);path.lineTo(3,3);path.lineTo(9,3);path.moveTo(15,3);path.lineTo(21,3);path.lineTo(21,9);path.moveTo(21,15);path.lineTo(21,21);path.lineTo(15,21);path.moveTo(9,21);path.lineTo(3,21);path.lineTo(3,15);break;
             case "Share":canvas.drawRoundRect(3,9,15,21,2,2,pen);canvas.drawLine(10,14,21,3,pen);canvas.drawLine(14,3,21,3,pen);canvas.drawLine(21,3,21,10,pen);break;
             case "Download":canvas.drawLine(12,3,12,16,pen);canvas.drawLine(7,11,12,16,pen);canvas.drawLine(17,11,12,16,pen);path.moveTo(3,16);path.lineTo(3,21);path.lineTo(21,21);path.lineTo(21,16);break;
             case "Volume":case "Muted":path.moveTo(3,9);path.lineTo(7,9);path.lineTo(12,5);path.lineTo(12,19);path.lineTo(7,15);path.lineTo(3,15);path.close();if(name.equals("Volume")){canvas.drawArc(10,7,20,17,-60,120,false,pen);canvas.drawArc(9,3,25,21,-55,110,false,pen);}else{canvas.drawLine(17,9,22,15,pen);canvas.drawLine(22,9,17,15,pen);}break;

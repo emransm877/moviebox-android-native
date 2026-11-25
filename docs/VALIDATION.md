@@ -1,5 +1,13 @@
 # Validation scope
 
+## Version 0.1.3
+
+See [0.1.3 release scope](releases/0.1.3.md) and its [candidate manifest](releases/0.1.3-validation.json). The signed production APK passed 38 release unit tests, build/lint, 72 combined Android 6/API 23 emulator scenarios and one additional stable portrait/landscape scenario. Independent HQ review covered the applicable implementation, test evidence and final visuals.
+
+The exact published 0.1.2 APK was installed on a disposable emulator, seeded with owned library/progress/preferences/search fixtures, then updated in place to this signed 0.1.3 APK. Both seed and post-update verification passed, preserving those values. This is an Android installation test, not a physical GitHub download or owner's updater test.
+
+These are owned-fixture emulator results. Physical installation, the owner's real in-app update test, exact complete upstream UI/feature parity and other device coverage remain unverified. No test result below is transferred from an older artifact to this candidate.
+
 ## Version 0.1.2
 
 See [0.1.2 release scope](releases/0.1.2.md). The exact signed APK passed 35 unit tests, 53 scoped API23 emulator scenarios, eight updater scenarios and two in-place-upgrade probes. Physical0.1.2 and live-service coverage remain unverified; previous physical results do not transfer to this candidate.

@@ -60,6 +60,6 @@ public class NativeSearchScenarios {
     }
     @Test public void suggestionsParserFiltersMetadataBeforeReducingToStrings()throws Exception{
         Api api=new Api("owned-search-fixture-identity"){ @Override protected Object requestOnce(String path,Map<String,String> args,JSONObject body,boolean nativeApi)throws Exception{if(path.equals("/tab-operating"))return new JSONObject();return new JSONArray().put(new JSONObject().put("word","Owned marked").put("isAdult",true)).put(new JSONObject().put("word","Owned safe"));}};
-        try{assertEquals(Collections.singletonList("Owned safe"),api.suggest("owned"));api.setFamilyMode(false);assertEquals(2,api.suggest("owned").size());}finally{api.close();}
+        try{assertEquals("Native API defaults to unrestricted suggestions",2,api.suggest("owned").size());api.setFamilyMode(true);assertEquals(Collections.singletonList("Owned safe"),api.suggest("owned"));api.setFamilyMode(false);assertEquals(2,api.suggest("owned").size());}finally{api.close();}
     }
 }

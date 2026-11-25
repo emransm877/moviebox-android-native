@@ -34,7 +34,7 @@ public final class UiCache {
                 JSONObject row=rows.optJSONObject(n);if(row==null||row.optInt("se")<=0)continue;
                 safe.put(new JSONObject().put("se",row.optInt("se")).put("maxEp",row.optInt("maxEp")).put("allEp",row.optString("allEp")));
             }out.put("seasons",safe);
-        }return out;
+        }TitleAvailability.copyCacheProof(source,out);return out;
     }
     static final long DETAIL_DISPLAY_AGE_MS=24L*60*60*1000;
     static final class DetailRecord {final JSONObject item;final long age;DetailRecord(JSONObject item,long age){this.item=item;this.age=age;}}

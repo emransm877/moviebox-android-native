@@ -17,7 +17,7 @@ public class Api {
     static final String NATIVE="https://api6.aoneroom.com",PREFIX="/wefeed-mobile-bff";
     static final String WEB="https://h5-api.aoneroom.com/wefeed-h5api-bff";
     static final String UA="MovieBoxPhone/"+BuildConfig.VERSION_NAME+" (Android "+Build.VERSION.RELEASE+"; "+Build.MODEL+")";
-    private volatile boolean familyMode=true;
+    private volatile boolean familyMode=false;
     public void setFamilyMode(boolean enabled){familyMode=enabled;}
     private volatile String webToken="",nativeToken="";private volatile boolean nativeReady=false;
     private final Map<String,JSONObject> details=new java.util.concurrent.ConcurrentHashMap<>();private final Map<String,Long> detailTimes=new java.util.concurrent.ConcurrentHashMap<>();
@@ -52,6 +52,7 @@ public class Api {
     static Map<String,String> args(Object... pairs){Map<String,String> result=new TreeMap<>();for(int i=0;i<pairs.length;i+=2)result.put(pairs[i].toString(),String.valueOf(pairs[i+1]));return result;}
     static byte[] read(InputStream stream,int max) throws IOException {try(InputStream input=stream;ByteArrayOutputStream out=new ByteArrayOutputStream()){byte[] buffer=new byte[16384];int n;while((n=input.read(buffer))!=-1){if(out.size()+n>max)throw new IOException("Response exceeds limit");out.write(buffer,0,n);}return out.toByteArray();}}
     static final class ServiceHttpException extends IOException {final int status;ServiceHttpException(int status){super("Service unavailable (HTTP "+status+"). Try again.");this.status=status;}}
+    public static final class NoSourcesException extends IOException {NoSourcesException(){super("No playable source is available for this selection.");}}
     public Object request(String path,Map<String,String> params,JSONObject body,boolean nativeApi)throws Exception{
         if(nativeApi)restoreSession();String attempted=nativeToken;
         try{return requestOnce(path,params,body,nativeApi);}catch(ServiceHttpException failure){
@@ -136,6 +137,13 @@ public class Api {
     public List<JSONObject> catalogue(int type,int page,JSONObject filters) throws Exception {JSONObject body=new JSONObject(filters.toString()).put("channelId",type).put("page",page).put("perPage",30);return items(request("/subject/filter",null,body,false));}
     public List<JSONObject> search(String keyword) throws Exception {warm();return items(request("/subject-api/search",args("host",NATIVE),new JSONObject().put("keyword",keyword).put("page",1).put("perPage",20).put("subjectType",0),true));}
     public JSONObject searchLanding()throws Exception{warm();Object result=request("/subject-api/search-rank/v2",args("everyoneSearch",1,"room",1),null,true);return result instanceof JSONObject?(JSONObject)result:new JSONObject();}
+    public List<JSONObject> recommendations(String subjectId)throws Exception{
+        JSONObject body=WatchRecommendations.requestBody(subjectId);boolean requestedFamily=familyMode;
+        warm();Object response=request("/subject-api/play-related-rec",args("host",NATIVE),body,true);
+        // A preference change while the request was running invalidates its result.
+        if(requestedFamily!=familyMode)return Collections.emptyList();
+        return WatchRecommendations.parse(response,subjectId,requestedFamily);
+    }
     public List<String> suggest(String keyword) throws Exception {warm();Object response=request("/subject-api/search-suggest",args("keyword",keyword,"perPage",20,"resultMode",2),null,true);List<String> result=new ArrayList<>();for(JSONObject item:items(response)){if(familyMode&&AdultContentPolicy.markedAdult(item))continue;String text=item.optString("word",item.optString("title",item.optString("keyword")));if(!text.isEmpty())result.add(text);if(result.size()>=20)break;}return result;}
     /** Memory-only lookup is safe on the UI thread. Disk and network run in detail(). */
     public JSONObject cachedDetail(String id){return cachedDetail(id,UiCache.DETAIL_AGE_MS);}
@@ -175,7 +183,8 @@ public class Api {
         if(cached!=null&&at!=null&&android.os.SystemClock.elapsedRealtime()-at<45000)return cached;
         JSONObject batch=(JSONObject)request("/subject-api/resource",args("host",NATIVE,"subjectId",subject.getString("subjectId"),"page",1,"perPage",20,"all",0,"startPosition",1,"endPosition",1,"pagerMode",season>0?2:0,"resolution",quality,"se",season,"epFrom",episode,"epTo",episode),null,true);
         if(sourceCache.size()>64){sourceCache.clear();sourceTimes.clear();}
-        sourceCache.put(cacheKey,batch);sourceTimes.put(cacheKey,android.os.SystemClock.elapsedRealtime());return batch;
+        // Empty/transient availability must not remain sticky for 45 seconds.
+        JSONArray rows=batch.optJSONArray("list");if(rows!=null&&rows.length()>0){sourceCache.put(cacheKey,batch);sourceTimes.put(cacheKey,android.os.SystemClock.elapsedRealtime());}return batch;
         }
     }
 
@@ -190,10 +199,7 @@ public class Api {
         // An old in-flight prefetch can finish, but only into an obsolete epoch.
         // No retry can consume its cached signed address, including fallback qualities.
         sourceEpoch.incrementAndGet();sourceCache.clear();sourceTimes.clear();
-        Set<Integer> attempts=new LinkedHashSet<>(Arrays.asList(quality,720,480));Exception last=null;
-        for(int candidate:attempts){if(Thread.currentThread().isInterrupted())throw new InterruptedIOException("Video refresh cancelled");
-            try{return firstPlayback(subject,season,episode,candidate,false);}catch(Exception failure){last=failure;}}
-        throw new IOException("No playable source is available after bounded refresh.",last);
+        return firstPlayback(subject,season,episode,quality,true);
     }
     public List<JSONObject> initialPlayback(JSONObject subject,int season,int episode) throws Exception {return initialPlayback(subject,season,episode,1080);}
     public List<JSONObject> initialPlayback(JSONObject subject,int season,int episode,int preferredQuality) throws Exception {
@@ -201,23 +207,40 @@ public class Api {
     }
     private List<JSONObject> firstPlayback(JSONObject subject,int season,int episode,int preferredQuality,boolean allowFallback) throws Exception {
         warm();int type=subject.optInt("subjectType");if(type==1){season=0;episode=0;}else if(type==2&&(season<1||episode<1))throw new IOException("Choose a season and episode first.");
-        JSONObject batch=resources(subject,season,episode,preferredQuality);Set<Integer> locked=new HashSet<>();
-        JSONArray qualities=batch.optJSONArray("collectionResolutions");if(qualities!=null)for(int i=0;i<qualities.length();i++){JSONObject q=qualities.optJSONObject(i);if(q!=null&&q.optInt("requireMemberType")>0)locked.add(q.optInt("resolution"));}
+        JSONObject batch=resources(subject,season,episode,preferredQuality);
+        List<JSONObject> ready=playableBatch(subject,season,episode,preferredQuality,batch);if(!ready.isEmpty())return ready;
+        // A missing preferred rendition must not wait for the full quality-menu
+        // enumeration. Probe only advertised unlocked alternatives and return
+        // the first usable batch. Three resource requests maximum, no duplicate.
+        if(allowFallback){List<Integer> choices=new ArrayList<>();JSONArray available=batch.optJSONArray("collectionResolutions");
+            if(available!=null)for(int n=0;n<available.length();n++){JSONObject row=available.optJSONObject(n);if(row==null)continue;int q=row.optInt("resolution");if(q>0&&q<=2160&&q!=preferredQuality&&row.optInt("requireMemberType")==0&&!row.optBoolean("vipLocked")&&!choices.contains(q))choices.add(q);}
+            Collections.sort(choices,(a,b)->{boolean belowA=a<=preferredQuality,belowB=b<=preferredQuality;return belowA!=belowB?(belowA?-1:1):Integer.compare(b,a);});
+            Exception last=null;for(int n=0;n<Math.min(2,choices.size());n++){if(Thread.currentThread().isInterrupted())throw new InterruptedIOException("Video lookup cancelled");int q=choices.get(n);
+                try{ready=playableBatch(subject,season,episode,q,resources(subject,season,episode,q));if(!ready.isEmpty())return ready;}
+                catch(ServiceHttpException failure){if(failure.status==401||failure.status==403||failure.status==441||failure.status==429)throw failure;last=failure;}
+                catch(IOException failure){last=failure;}
+            }if(last!=null)throw last;
+        }
+        throw new NoSourcesException();
+    }
+    private List<JSONObject> playableBatch(JSONObject subject,int season,int episode,int preferredQuality,JSONObject batch)throws Exception {
+        if(!(batch.opt("list") instanceof JSONArray)||batch.has("collectionResolutions")&&!(batch.opt("collectionResolutions") instanceof JSONArray))throw new IOException("Video source metadata could not be read. Please retry.");
+        int type=subject.optInt("subjectType");Set<Integer> locked=new HashSet<>();
+        JSONArray qualities=batch.optJSONArray("collectionResolutions");if(qualities!=null)for(int i=0;i<qualities.length();i++){JSONObject q=qualities.optJSONObject(i);if(q==null)throw new IOException("Video source metadata could not be read. Please retry.");if(q.optInt("requireMemberType")>0)locked.add(q.optInt("resolution"));}
         List<JSONObject> sources=new ArrayList<>();JSONArray list=batch.optJSONArray("list");
-        if(list!=null)for(int i=0;i<list.length();i++){JSONObject row=list.optJSONObject(i);if(row==null)continue;int q=row.optInt("resolution",batch.optInt("resolution",preferredQuality));
+        if(list!=null)for(int i=0;i<list.length();i++){JSONObject row=list.optJSONObject(i);if(row==null||row.has("resourceLink")&&!row.isNull("resourceLink")&&!(row.opt("resourceLink") instanceof String))throw new IOException("Video source metadata could not be read. Please retry.");int q=row.optInt("resolution",batch.optInt("resolution",preferredQuality));
             if(locked.contains(q)||!Policies.eligibleResource(type,season,episode,row.optInt("se"),row.optInt("ep"),row.optInt("requireMemberType"),row.optBoolean("vipLocked"),q,row.optLong("size"),row.optLong("duration"))||!row.optString("resourceLink").startsWith("https://"))continue;
             sources.add(row);resourceContext.put(subject.optString("subjectId")+":"+row.optString("resourceId"),row);
         }
-        if(sources.isEmpty()){if(allowFallback)return playback(subject,season,episode);throw new IOException("That video quality is unavailable.");}
         Collections.sort(sources,(a,b)->Integer.compare(b.optInt("resolution"),a.optInt("resolution")));return sources;
     }
     public List<JSONObject> playback(JSONObject subject,int season,int episode) throws Exception {
         warm();int type=subject.optInt("subjectType");if(type==1){season=0;episode=0;}else if(type==2&&(season<1||episode<1))throw new IOException("Choose a season and episode first.");
-        JSONObject first=resources(subject,season,episode,1080);Map<Integer,JSONObject> selected=new TreeMap<>(Collections.reverseOrder());Set<Integer> locked=new HashSet<>(),allowed=new HashSet<>();
+        JSONObject first=resources(subject,season,episode,1080);if(!(first.opt("list") instanceof JSONArray)||first.has("collectionResolutions")&&!(first.opt("collectionResolutions") instanceof JSONArray))throw new IOException("Video source metadata could not be read. Please retry.");Map<Integer,JSONObject> selected=new TreeMap<>(Collections.reverseOrder());Set<Integer> locked=new HashSet<>(),allowed=new HashSet<>();
         JSONArray qualities=first.optJSONArray("collectionResolutions");if(qualities!=null)for(int i=0;i<qualities.length();i++){JSONObject row=qualities.getJSONObject(i);int q=row.optInt("resolution");if(row.optInt("requireMemberType")>0)locked.add(q);else if(q>0&&q<=2160)allowed.add(q);}
-        List<JSONObject> batches=new ArrayList<>();batches.add(first);
+        List<JSONObject> batches=new ArrayList<>();batches.add(first);Exception lookupFailure=null;
         // Additional quality lookup is bounded; a failure never discards the first usable source.
-        for(int q:allowed)if(q!=1080)try{batches.add(resources(subject,season,episode,q));}catch(Exception ignored){}
+        for(int q:allowed)if(q!=1080)try{batches.add(resources(subject,season,episode,q));}catch(Exception failure){lookupFailure=failure;}
         for(JSONObject batch:batches){JSONArray list=batch.optJSONArray("list");if(list==null)continue;for(int i=0;i<list.length();i++){
             JSONObject row=list.getJSONObject(i);int q=row.optInt("resolution",batch.optInt("resolution"));
             if(locked.contains(q)||!Policies.eligibleResource(type,season,episode,row.optInt("se"),row.optInt("ep"),row.optInt("requireMemberType"),row.optBoolean("vipLocked"),q,row.optLong("size"),row.optLong("duration")))continue;
@@ -225,7 +248,7 @@ public class Api {
             JSONObject old=selected.get(q);if(old==null||row.optLong("size")>old.optLong("size"))selected.put(q,row);
             resourceContext.put(subject.optString("subjectId")+":"+row.optString("resourceId"),row);
         }}
-        if(selected.isEmpty())throw new IOException("No playable unlocked source is available for this selection.");return new ArrayList<>(selected.values());
+        if(selected.isEmpty()){if(lookupFailure!=null)throw lookupFailure;throw new NoSourcesException();}return new ArrayList<>(selected.values());
     }
     public List<JSONObject> captions(JSONObject subject,JSONObject stream) throws Exception {
         JSONArray ext=stream.optJSONArray("extCaptions");if(ext!=null&&ext.length()>0)return items(ext);
