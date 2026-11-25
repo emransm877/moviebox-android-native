@@ -2,6 +2,8 @@
 
 ## Version 0.1.4
 
+[Stable 0.1.4](https://github.com/emransm877/moviebox-android-native/releases/tag/v0.1.4) is published. Its release manifest records source commit, recorded asset digests and metadata-only live verification.
+
 See [0.1.4 scope](releases/0.1.4.md) and [artifact manifest](releases/0.1.4-validation.json). The exact signed APK passed release build/lint, 46 unit tests and 105 Android6/API23 emulator scenarios. Thirteen fresh visual scenarios and one tutorial-free landscape case passed on the same production APK; independent HQ and owner visual review passed.
 
 The exact published 0.1.3 APK was seeded on a disposable emulator and updated in place to this exact 0.1.4 APK with the retained signer. List, progress, audio/subtitle preferences and recent search survived. This is a real Android installation/update test, not a live GitHub download or owner-phone update. The owner phone remains on 0.1.3. Modern platform Back gestures, Android8+ install-permission UI and broader physical0.1.4 behavior remain unverified.

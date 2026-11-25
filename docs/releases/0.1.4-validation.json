@@ -2,7 +2,7 @@
   "project": "MovieBox Android App",
   "version": "0.1.4",
   "version_code": 7,
-  "status": "LOCAL_REVIEWED_CANDIDATE_NOT_PUBLISHED",
+  "status": "PUBLISHED_STABLE_SCOPED_VALIDATION",
   "package": "org.emransm.moviebox.phone",
   "artifact": {
     "filename": "MovieBox-Android-App-0.1.4.apk",
@@ -64,5 +64,34 @@
   },
   "verification_release_asset_GET_HEAD": 0,
   "private_future_fixture": "Not published or installed; public source intentionally omits it",
-  "public_source_status": "Curated preparation; source commit/archive/publication identity to be supplied by publisher"
+  "public_source_status": "Published source commit and reviewed curated archive bound above; subsequent documentation commits do not replace release artifacts.",
+  "publication": {
+    "url": "https://github.com/emransm877/moviebox-android-native/releases/tag/v0.1.4",
+    "published_at": "2026-11-25T19:09:35Z",
+    "source_commit": "81e80d46d912618795c7674207401b4e75923594",
+    "assets": [
+      {
+        "filename": "MovieBox-Android-App-0.1.4-source.zip",
+        "bytes": 16756714,
+        "digest": "sha256:eb9b8e2d675ec70a858e006c162b01a1503d2f9d0efc46eae4bcd33d9a094b6d",
+        "url": "https://github.com/emransm877/moviebox-android-native/releases/download/v0.1.4/MovieBox-Android-App-0.1.4-source.zip"
+      },
+      {
+        "filename": "MovieBox-Android-App-0.1.4.apk",
+        "bytes": 7439917,
+        "digest": "sha256:d23fa38815e9862f333621481e4152b3ff40dd38f6fd4b0476a4ae7bc62fb4d8",
+        "url": "https://github.com/emransm877/moviebox-android-native/releases/download/v0.1.4/MovieBox-Android-App-0.1.4.apk"
+      },
+      {
+        "filename": "SHA256SUMS.txt",
+        "bytes": 203,
+        "digest": "sha256:0804bde5f00edfa51634f6d6463cfe91e2e11fa80bc92e565553092fe7ad61b4",
+        "url": "https://github.com/emransm877/moviebox-android-native/releases/download/v0.1.4/SHA256SUMS.txt"
+      }
+    ],
+    "metadata_verified": true,
+    "verification_asset_GET_HEAD": 0,
+    "Actions_enabled": false,
+    "workflow_run_ids_unchanged": true
+  }
 }
