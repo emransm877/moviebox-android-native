@@ -2,6 +2,8 @@
 
 ## Version 0.1.4
 
+The current Home image in the README is an actual 0.1.4/build 7 Android 6/API 23 emulator capture after normal release startup with the live catalogue. [Screenshot provenance](images/0.1.4-home-provenance.json) binds its SHA-256 and production APK. It is not owner-phone runtime evidence and does not alter the release-time source archive.
+
 [Stable 0.1.4](https://github.com/emransm877/moviebox-android-native/releases/tag/v0.1.4) is published. Its release manifest records source commit, recorded asset digests and metadata-only live verification.
 
 See [0.1.4 scope](releases/0.1.4.md) and [artifact manifest](releases/0.1.4-validation.json). The exact signed APK passed release build/lint, 46 unit tests and 105 Android6/API23 emulator scenarios. Thirteen fresh visual scenarios and one tutorial-free landscape case passed on the same production APK; independent HQ and owner visual review passed.

@@ -6,6 +6,14 @@ The installed app is named **MovieBox**.
 
 [Download the latest APK](https://github.com/emransm877/moviebox-android-native/releases/latest) | [All MovieBox projects](https://emransm877.github.io/moviebox-projects/) | [Report a problem](https://github.com/emransm877/moviebox-android-native/issues)
 
+## Current screen
+
+<img src="docs/images/0.1.4-live-home-emulator.png" alt="MovieBox Android App 0.1.4 build 7 home screen in an Android 6/API 23 emulator, displaying the live catalogue" width="280">
+
+Android App  -  **0.1.4 build 7 in an Android 6/API 23 emulator; live catalogue**. This is normal release startup, not a physical-phone capture or injected QA catalogue. [Capture provenance and SHA-256](docs/images/0.1.4-home-provenance.json).
+
+### Historical phone captures
+
 <img src="docs/images/native-home.png" alt="MovieBox Android App 0.1.1 build 4 home screen on an Android 17 phone" width="280">
 <img src="docs/images/native-icons.png" alt="Transparent icon choices in MovieBox Android App 0.1.1 build 4" width="280">
 
