@@ -1,5 +1,9 @@
 # Validation scope
 
+## Version 0.1.2
+
+See [0.1.2 release scope](releases/0.1.2.md). The exact signed APK passed 35 unit tests, 53 scoped API23 emulator scenarios, eight updater scenarios and two in-place-upgrade probes. Physical0.1.2 and live-service coverage remain unverified; previous physical results do not transfer to this candidate.
+
 ## Version 0.1.1
 
 Version 0.1.1 (version code 4) uses the existing signing identity. Release build and debug/instrumentation compilation passed, together

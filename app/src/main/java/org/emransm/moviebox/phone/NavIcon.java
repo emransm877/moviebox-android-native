@@ -10,6 +10,8 @@ final class NavIcon extends Drawable {
     public int getIntrinsicWidth(){return size;}public int getIntrinsicHeight(){return size;}
     @Override public void draw(Canvas canvas){canvas.save();canvas.translate(getBounds().left,getBounds().top);canvas.scale(getBounds().width()/24f,getBounds().height()/24f);Path path=new Path();
         switch(name){
+            case "Share":canvas.drawRoundRect(3,9,15,21,2,2,pen);canvas.drawLine(10,14,21,3,pen);canvas.drawLine(14,3,21,3,pen);canvas.drawLine(21,3,21,10,pen);break;
+            case "Download":canvas.drawLine(12,3,12,16,pen);canvas.drawLine(7,11,12,16,pen);canvas.drawLine(17,11,12,16,pen);path.moveTo(3,16);path.lineTo(3,21);path.lineTo(21,21);path.lineTo(21,16);break;
             case "Volume":case "Muted":path.moveTo(3,9);path.lineTo(7,9);path.lineTo(12,5);path.lineTo(12,19);path.lineTo(7,15);path.lineTo(3,15);path.close();if(name.equals("Volume")){canvas.drawArc(10,7,20,17,-60,120,false,pen);canvas.drawArc(9,3,25,21,-55,110,false,pen);}else{canvas.drawLine(17,9,22,15,pen);canvas.drawLine(22,9,17,15,pen);}break;
             case "ChevronDown":path.moveTo(6,9);path.lineTo(12,15);path.lineTo(18,9);break;
             case "Back":canvas.drawLine(20,12,4,12,pen);path.moveTo(11,5);path.lineTo(4,12);path.lineTo(11,19);break;

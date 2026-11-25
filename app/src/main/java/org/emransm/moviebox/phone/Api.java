@@ -17,6 +17,8 @@ public class Api {
     static final String NATIVE="https://api6.aoneroom.com",PREFIX="/wefeed-mobile-bff";
     static final String WEB="https://h5-api.aoneroom.com/wefeed-h5api-bff";
     static final String UA="MovieBoxPhone/"+BuildConfig.VERSION_NAME+" (Android "+Build.VERSION.RELEASE+"; "+Build.MODEL+")";
+    private volatile boolean familyMode=true;
+    public void setFamilyMode(boolean enabled){familyMode=enabled;}
     private volatile String webToken="",nativeToken="";private volatile boolean nativeReady=false;
     private final Map<String,JSONObject> details=new java.util.concurrent.ConcurrentHashMap<>();private final Map<String,Long> detailTimes=new java.util.concurrent.ConcurrentHashMap<>();
     private final Map<String,JSONObject> sourceCache=new java.util.concurrent.ConcurrentHashMap<>();
@@ -75,8 +77,8 @@ public class Api {
             byte[] key=Base64.decode("76iRl07s0xSN9jqmEWAt79EBJZulIQIsV64FZr2O",Base64.DEFAULT);Mac signer=Mac.getInstance("HmacMD5");signer.init(new SecretKeySpec(key,"HmacMD5"));
             connection.setRequestProperty("x-tr-signature",timestamp+"|2|"+Base64.encodeToString(signer.doFinal(message.getBytes(StandardCharsets.UTF_8)),Base64.NO_WRAP));
             connection.setRequestProperty("X-Client-Status","0");
-            for(String field:new String[]{"X-Child-UID","X-Play-Mode","X-Idle-Data","X-Family-Mode","X-Content-Mode"})connection.setRequestProperty(field,client.optString(field));
-        }else{connection.setRequestProperty("Referer","https://movieboxhd.net/");connection.setRequestProperty("X-Request-Lang","en");connection.setRequestProperty("X-Vip-Restrict","1");}
+            for(String field:new String[]{"X-Child-UID","X-Play-Mode","X-Idle-Data","X-Family-Mode","X-Content-Mode"})connection.setRequestProperty(field,field.equals("X-Family-Mode")?(familyMode?"1":"0"):client.optString(field));
+        }else{connection.setRequestProperty("X-Family-Mode",familyMode?"1":"0");connection.setRequestProperty("Referer","https://movieboxhd.net/");connection.setRequestProperty("X-Request-Lang","en");connection.setRequestProperty("X-Vip-Restrict","1");}
         try{
             if(payload!=null){connection.setDoOutput(true);try(OutputStream output=connection.getOutputStream()){output.write(payload);}}
             int status=connection.getResponseCode();if(status!=200)throw new ServiceHttpException(status);
@@ -133,7 +135,8 @@ public class Api {
     static List<JSONObject> items(Object value) throws JSONException {JSONArray list=value instanceof JSONArray?(JSONArray)value:((JSONObject)value).optJSONArray("items");if(list==null)list=((JSONObject)value).optJSONArray("list");List<JSONObject> result=new ArrayList<>();if(list!=null)for(int i=0;i<list.length();i++)if(list.optJSONObject(i)!=null)result.add(list.getJSONObject(i));return result;}
     public List<JSONObject> catalogue(int type,int page,JSONObject filters) throws Exception {JSONObject body=new JSONObject(filters.toString()).put("channelId",type).put("page",page).put("perPage",30);return items(request("/subject/filter",null,body,false));}
     public List<JSONObject> search(String keyword) throws Exception {warm();return items(request("/subject-api/search",args("host",NATIVE),new JSONObject().put("keyword",keyword).put("page",1).put("perPage",20).put("subjectType",0),true));}
-    public List<String> suggest(String keyword) throws Exception {warm();Object response=request("/subject-api/search-suggest",args("keyword",keyword,"perPage",8,"resultMode",0),null,true);List<String> result=new ArrayList<>();for(JSONObject item:items(response)){String text=item.optString("word",item.optString("title",item.optString("keyword")));if(!text.isEmpty())result.add(text);if(result.size()>=8)break;}return result;}
+    public JSONObject searchLanding()throws Exception{warm();Object result=request("/subject-api/search-rank/v2",args("everyoneSearch",1,"room",1),null,true);return result instanceof JSONObject?(JSONObject)result:new JSONObject();}
+    public List<String> suggest(String keyword) throws Exception {warm();Object response=request("/subject-api/search-suggest",args("keyword",keyword,"perPage",20,"resultMode",2),null,true);List<String> result=new ArrayList<>();for(JSONObject item:items(response)){if(familyMode&&AdultContentPolicy.markedAdult(item))continue;String text=item.optString("word",item.optString("title",item.optString("keyword")));if(!text.isEmpty())result.add(text);if(result.size()>=20)break;}return result;}
     /** Memory-only lookup is safe on the UI thread. Disk and network run in detail(). */
     public JSONObject cachedDetail(String id){return cachedDetail(id,UiCache.DETAIL_AGE_MS);}
     public JSONObject cachedDisplayDetail(String id){return cachedDetail(id,UiCache.DETAIL_DISPLAY_AGE_MS);}

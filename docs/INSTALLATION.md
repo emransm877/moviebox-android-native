@@ -1,8 +1,8 @@
 # Installation and updates
 
 Download the APK from this repository's Releases page, not the separate Android
-patch or Android TV project. The 0.1.1 candidate filename is
-`MovieBox-Android-App-0.1.1.apk`; installed label MovieBox; package
+patch or Android TV project. The 0.1.2 candidate filename is
+`MovieBox-Android-App-0.1.2.apk`; installed label MovieBox; package
 `org.emransm.moviebox.phone`; Android 6/API 23 minimum.
 
 If Android blocks installation, check free space and the browser/file-manager

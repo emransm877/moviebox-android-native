@@ -1,0 +1,68 @@
+{
+  "reviewer": "Independent Agency HQ code-reviewer, reality-checker and mobile-release-engineer guidance applied by update_release_review",
+  "date": "2026-11-25 Asia/Dhaka",
+  "candidate": "portrait-watch-attempt13-2026-11-25",
+  "version": "0.1.2",
+  "version_code": 5,
+  "artifact_sha256": "23721d1b3538cf212c7e618a464d5c7adfdcc4698a0c5dad399ca7dae7e7f718",
+  "artifact_bytes": 7415793,
+  "build": "PASS: frozen build log BUILD SUCCESSFUL",
+  "unit_tests": "PASS:35;0failures per candidate receipt",
+  "signed_emulator_tests": "PASS:53 exact signed-release scenarios; separate updater8PASS; before/after upgrade probes1eachPASS",
+  "updater_regressions": "PASS:8 scoped fixture tests for stableasset trust, dismissibility, deferred checks, manual override, failure retry, coalescing, and invalid/pending rejection",
+  "source_review": "PASS within bounded updater/source scope; no new code-security or data-loss blocker found",
+  "visual_review": "PASS for corrected Search Clear/navigation and bounded portrait layout; owner accepted the shown portrait layout.",
+  "findings": [
+    {
+      "id": "V1",
+      "status": "RESOLVED",
+      "evidence": "candidate13/emulator-captures/qa-search-large-text.png",
+      "resolution": "Clear is singleline and padded at1.5font; Search remainsvisible"
+    },
+    {
+      "id": "V2",
+      "status": "RESOLVED",
+      "evidence": "candidate13/emulator-captures/qa-search-landing.png and qa-search-large-text.png",
+      "resolution": "Bottomnavigation absent from Search aboveIME and atrest"
+    },
+    {
+      "id": "E1",
+      "status": "UNVERIFIED visual landscapevolume",
+      "evidence": "candidate13/emulator-captures/qa-volume-landscape-100.png",
+      "reason": "OS fullscreen intro occludes scene; geometrytestpassed separately; do notclaimfull landscapevisualreview"
+    }
+  ],
+  "other_visuals": "Portrait16:9player/tools/resources/series episodes rendered; chips aligned. Horizontal tool strip intentionally scrolls; lastitem partially visible until swipe. Suggestion rows readable. Fixture artwork empty by design, does not establish liveimage delivery.",
+  "remote_workflow_evidence": {
+    "collection": "Authenticated readonly fetch .github/workflows contains onlyandroid.yml",
+    "blob": "fb198c514a2ad845a0e4b7c0c79ceef58ea26ab0",
+    "triggers": [
+      "workflow_dispatch"
+    ],
+    "no_push_release_trigger": true,
+    "actions_admin_setting": "Not exposed by reviewer connector; parent separately reports read enabledfalse"
+  },
+  "limitations": [
+    "Physical candidate installation prohibited byowner; phoneunchanged",
+    "Exact original series UI parity remains unverified; owner accepted only the shown portrait layout.",
+    "Livehotfeed efficacy and exhaustive stream compatibility unverified",
+    "Source snapshot includes optional proprietary artwork fixtures; do notupload unfiltered snapshot",
+    "Current installed0.1.1 cannot inherit newerrorhandling until userupdates; publicationdoesnotreset GitHub APIrate limit"
+  ],
+  "release_ready": false,
+  "reviewer_actions": "Readonly source/artifact/log/screenshot inspection plus this report; no source edits, installs, GitHub mutations or Actions",
+  "source_snapshot_sha256": "e68c9e8d918e0fc0fa5edfa35777308f3caa51f5cba83ad0c95617c2ea905b8b",
+  "source_snapshot_match": "PASS all reviewed files byte-match frozen candidate source",
+  "evidence_log_sha256": {
+    "build.log": "b3b8fbfb1fd3f1fa592bb84bd9c833d2651787354c82f1b1de9c5b94972e6e65",
+    "signed-release-runtime.txt": "7f567abae500aaa74ea4f790ed833a996c482d12da3f2d496045eecf523e55cc",
+    "updater-runtime.txt": "7e1f8c6c88d763d5d05203326f33bc2697a0282d23038de704197775eda5ad3e",
+    "upgrade-seed.txt": "92ad7d09b501bf3102156a5c2efa18e186e0bf190a44a3be85cae273ae41bbe9",
+    "upgrade-verify.txt": "218fbbcd2070007953d5af9c2e13fb1c7782087ce5c4f8347faa71e537729d4a",
+    "signer.txt": "c68b4f123d34229fb768a88bce19e5f9dcb1e8fbd44ccf91a51e9537dc0b38b6"
+  },
+  "owner_ui_acceptance": "PASS for portrait layout: parent reports owner explicitly replied Layout looks right to portrait preview. This is not blanket exact-parity or all-device acceptance.",
+  "release_test_handoff": "Local technical and scoped UI acceptance PASS for candidate13. Ready for publisher gate review and owner self-update test handoff, subject to final source/docs/checksums/updatefeed consistency and authorized publication. Physical candidate install intentionally not performed by agent.",
+  "handoff_ready": true,
+  "remaining_release_acceptance": "Owner self-update on physical phone remains pending after publication; final publication information consistency belongs to publisher gate."
+}

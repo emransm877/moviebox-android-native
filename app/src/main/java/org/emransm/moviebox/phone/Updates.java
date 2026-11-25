@@ -31,8 +31,10 @@ final class Updates {
  }
  static boolean successful(JSONObject result){String status=result.optString("status");return AVAILABLE.equals(status)||CURRENT.equals(status)||OLDER.equals(status);}
  static String message(JSONObject result){String status=result.optString("status");if(CURRENT.equals(status))return "You're using the latest published version.";if(OLDER.equals(status))return "No newer published version was found.";if(INCOMPLETE.equals(status))return "The release has no supported installation file yet. Try again later.";return "Update information couldn't be verified. Try again later.";}
+ static final class CheckUnavailable extends java.io.IOException { CheckUnavailable(String message){super(message);} }
+ static String failureMessage(int status,boolean rateLimited){if(status==429||(status==403&&rateLimited))return "GitHub has temporarily limited update checks. Try again later; your installed app still works.";if(status==404)return "No published update is available yet.";return "Update information is unavailable. Check your connection and try again.";}
  static JSONObject check()throws Exception{
   HttpsURLConnection connection=(HttpsURLConnection)new URL("https://api.github.com/repos/"+REPOSITORY+"/releases/latest").openConnection();connection.setConnectTimeout(6000);connection.setReadTimeout(8000);connection.setRequestProperty("Accept","application/vnd.github+json");connection.setRequestProperty("User-Agent","MovieBoxPhone/"+VERSION);
-  try{if(connection.getResponseCode()!=200)throw new java.io.IOException("Update information is unavailable. Try again later.");JSONObject release=new JSONObject(Utf8Json.decode(Api.read(connection.getInputStream(),1024*1024)));return evaluate(release,VERSION);}finally{connection.disconnect();}
+  try{int status=connection.getResponseCode();if(status!=200)throw new CheckUnavailable(failureMessage(status,"0".equals(connection.getHeaderField("X-RateLimit-Remaining"))));JSONObject release=new JSONObject(Utf8Json.decode(Api.read(connection.getInputStream(),1024*1024)));return evaluate(release,VERSION);}finally{connection.disconnect();}
  }
 }

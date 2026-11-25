@@ -31,3 +31,7 @@ this client's control. App settings do not change those providers' policies.
 For a report, share the app version, Android version and reproduction steps. Do
 not publish tokens, account details, private library exports, full signed stream
 URLs or screenshots containing personal data.
+
+## Recent searches
+
+Version0.1.2 stores recent search queries locally when Save recent searches is enabled. Clear them or disable saving under Me. Clearing recent queries does not remove My list or watch history. Search terms submitted to the catalogue are still sent to its external service.

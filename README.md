@@ -9,7 +9,9 @@ The installed app is named **MovieBox**.
 <img src="docs/images/native-home.png" alt="MovieBox Android App 0.1.1 build 4 home screen on an Android 17 phone" width="280">
 <img src="docs/images/native-icons.png" alt="Transparent icon choices in MovieBox Android App 0.1.1 build 4" width="280">
 
-Actual 0.1.1 build 4 captures from the maintainer's Android 17 phone.
+Historical 0.1.1 build 4 captures from the maintainer's Android 17 phone. The latest 0.1.2 portrait layout has changed; these images are not current-build captures.
+
+**Latest: 0.1.2 (build 5).** [Changes and exact validation scope](docs/releases/0.1.2.md).
 
 ## Get started
 
@@ -51,7 +53,9 @@ Title availability, artwork, languages, subtitles and actual qualities depend on
 the external service. Network errors, expired links or missing tracks can occur.
 A source without 720p cannot honestly be relabeled as 720p.
 
-Version 0.1.1 passed 131 scoped scenarios on one Android 17 phone after a same-signer in-place update. Its 29 unit tests passed; lint reports zero errors and 89 warnings. Android 6 emulator checks apply to earlier builds, not this exact APK. These results do not guarantee every phone, decoder, launcher or Android version.
+Version 0.1.2 passed 35 release unit tests, 53 scoped Android 6 emulator scenarios and eight updater scenarios, plus two in-place-update probes. Physical-phone testing of 0.1.2 is pending the owner's update test.
+
+Historically, version 0.1.1 passed 131 scoped scenarios on one Android 17 phone after a same-signer in-place update. Its 29 unit tests passed; lint reports zero errors and 89 warnings. That historical 0.1.1 result did not include exact-build Android 6 emulator coverage. These results do not guarantee every phone, decoder, launcher or Android version.
 See [validation scope](docs/VALIDATION.md), [privacy](docs/PRIVACY.md),
 [installation help](docs/INSTALLATION.md) and [security](SECURITY.md).
 

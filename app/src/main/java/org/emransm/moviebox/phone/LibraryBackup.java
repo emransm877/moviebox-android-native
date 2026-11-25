@@ -70,13 +70,15 @@ public final class LibraryBackup {
         return clean.put("list",titles).put("history",records);
     }
     private static JSONObject title(JSONObject source,boolean strict)throws IOException,JSONException{
-        if(strict)only(source,"subjectId","subjectType","title","cover","releaseDate","imdbRatingValue","countryName","genre");
+        if(strict)only(source,"subjectId","subjectType","title","cover","releaseDate","imdbRatingValue","countryName","genre","isAdult");
         String id=string(source,"subjectId",128);if(!id.matches("[A-Za-z0-9_-]{1,128}"))throw invalid("invalid title identity");String name=string(source,"title",1024);if(name.trim().isEmpty())throw invalid("empty title");
         JSONObject out=new JSONObject().put("subjectId",id).put("subjectType",integer(source,"subjectType",1,2)).put("title",name);
         for(String key:new String[]{"releaseDate","countryName","genre"})if(present(source,key,strict))out.put(key,string(source,key,key.equals("genre")?1024:256));
         if(present(source,"imdbRatingValue",strict)){Object rating=source.get("imdbRatingValue");if(!(rating instanceof String)&&!(rating instanceof Number))throw invalid("invalid rating");String text=rating.toString();if(text.length()>32)throw invalid("invalid rating");try{double number=Double.parseDouble(text);if(Double.isNaN(number)||Double.isInfinite(number)||number<0||number>10)throw invalid("invalid rating");}catch(NumberFormatException bad){if(!text.isEmpty())throw invalid("invalid rating");}out.put("imdbRatingValue",rating);}
         if(present(source,"cover",strict)){Object cover=source.get("cover");String location;JSONObject object=null;if(cover instanceof String)location=(String)cover;else if(cover instanceof JSONObject){object=(JSONObject)cover;if(strict)only(object,"url","width","height");location=string(object,"url",2048);}else throw invalid("invalid cover");
             String safe=publicArtwork(location,strict);if(safe!=null&&!safe.isEmpty()){if(object==null)out.put("cover",safe);else{JSONObject art=new JSONObject().put("url",safe);for(String size:new String[]{"width","height"})if(object.has(size))art.put(size,integer(object,size,0,16384));out.put("cover",art);}}}
+        if(source.has("isAdult")&&strict&&!(source.opt("isAdult") instanceof Boolean))throw invalid("invalid adult flag");
+        if(AdultContentPolicy.markedAdult(source))out.put("isAdult",true);
         return out;
     }
     private static JSONObject history(JSONObject row,boolean strict)throws IOException,JSONException{

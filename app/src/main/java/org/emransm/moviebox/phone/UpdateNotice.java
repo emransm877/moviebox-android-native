@@ -27,11 +27,11 @@ final class UpdateNotice {
   presentPending(activity,root,busy,preferences);long checked=preferences.getLong("checked",0),age=clock.now()-checked;
   if(!manual&&(!preferences.getBoolean("enabled",true)||checked>0&&age>=0&&age<12L*60*60*1000))return;
   if(IN_FLIGHT.containsKey(preferences)){if(manual)Toast.makeText(activity,"Already checking for updates.",Toast.LENGTH_SHORT).show();return;}IN_FLIGHT.put(preferences,true);
-  try{worker.execute(()->{JSONObject result=null;try{result=checker.check();}catch(Exception unavailable){}final JSONObject update=result;
+  try{worker.execute(()->{JSONObject result=null;String reason=null;try{result=checker.check();}catch(Updates.CheckUnavailable unavailable){reason=unavailable.getMessage();}catch(Exception unavailable){}final JSONObject update=result;final String failure=reason;
    activity.runOnUiThread(()->{IN_FLIGHT.remove(preferences);boolean valid=update!=null&&Updates.successful(update)&&Updates.version(update.optString("version"))&&(!update.optBoolean("available")||acceptable(update));
     if(valid){preferences.edit().putLong("checked",clock.now()).apply();if(update.optBoolean("available")&&preferences.getBoolean("enabled",true)&&!preferences.getString("dismissed","").equals(update.optString("version")))preferences.edit().putString("pending",update.toString()).apply();else preferences.edit().remove("pending").apply();}
     if(activity.isFinishing()||activity.isDestroyed())return;
-    if(!valid){if(manual)Toast.makeText(activity,update==null||Updates.successful(update)?"Couldn't check updates. Try again later.":Updates.message(update),Toast.LENGTH_LONG).show();return;}
+    if(!valid){if(manual)Toast.makeText(activity,update==null?(failure==null?"Couldn't check updates. Try again later.":failure):Updates.successful(update)?"Couldn't check updates. Try again later.":Updates.message(update),Toast.LENGTH_LONG).show();return;}
     if(!update.optBoolean("available")){if(manual)Toast.makeText(activity,Updates.message(update),Toast.LENGTH_SHORT).show();return;}
     if(manual&&!busy.playing()){show(activity,root,preferences,update);return;}
     presentPending(activity,root,busy,preferences);

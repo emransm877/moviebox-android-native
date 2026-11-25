@@ -50,7 +50,7 @@ public class PlaybackRecoveryScenarios {
         try(ActivityScenario<PhoneActivity> s=ActivityScenario.launch(PhoneActivity.class)){
             BlockFlowScenarios.isolate(s,api);main(s,a->call(a,"openDetail",new Class[]{JSONObject.class,boolean.class},BlockFlowScenarios.title("delayed-retry",1),true));waitFor(()->playing(s),10000);
             main(s,a->{call(a,"retryPlaybackSource",new Class[]{});call(a,"retryPlaybackSource",new Class[]{});});assertTrue(api.entered.await(2,TimeUnit.SECONDS));assertEquals(1,api.refreshes.get());
-            main(s,a->call(a,"leavePlayer",new Class[]{}));api.release.countDown();Thread.sleep(300);main(s,a->{assertNull(field(a,"player"));assertNotNull(description((View)field(a,"root"),"Watch or resume"));});
+            main(s,a->call(a,"leavePlayer",new Class[]{}));api.release.countDown();Thread.sleep(300);main(s,a->{assertNull(field(a,"player"));assertNull("Back returns to browsing, without a details card",field(a,"subject"));assertNotNull(field(a,"content"));});
         }finally{api.release.countDown();api.close();}
     }
     @Test public void failedAndEmptyRecoveryRemainNavigableWithoutReplacingCurrentItem()throws Exception{
@@ -59,7 +59,7 @@ public class PlaybackRecoveryScenarios {
             try(ActivityScenario<PhoneActivity> s=ActivityScenario.launch(PhoneActivity.class)){
                 BlockFlowScenarios.isolate(s,api);main(s,a->call(a,"openDetail",new Class[]{JSONObject.class,boolean.class},BlockFlowScenarios.title("failed-retry",1),true));waitFor(()->playing(s),10000);
                 Object[] before={null};main(s,a->{before[0]=((ExoPlayer)field(a,"player")).getCurrentMediaItem();call(a,"retryPlaybackSource",new Class[]{});});assertTrue(api.entered.await(2,TimeUnit.SECONDS));waitFor(()->{boolean[] done={false};main(s,a->done[0]=!(Boolean)field(a,"recoveringSource"));return done[0];},4000);
-                main(s,a->{assertSame(before[0],((ExoPlayer)field(a,"player")).getCurrentMediaItem());assertTrue((Boolean)field(a,"visibleControls"));assertNotNull(description((View)field(a,"root"),"Back to details"));call(a,"leavePlayer",new Class[]{});assertNull(field(a,"player"));});
+                main(s,a->{assertSame(before[0],((ExoPlayer)field(a,"player")).getCurrentMediaItem());assertTrue((Boolean)field(a,"visibleControls"));assertNotNull(description((View)field(a,"root"),"Back to browsing"));call(a,"leavePlayer",new Class[]{});assertNull(field(a,"player"));});
             }
         }
     }
