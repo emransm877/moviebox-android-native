@@ -57,7 +57,9 @@ Title availability, artwork, languages, subtitles and actual qualities depend on
 the external service. Network errors, expired links or missing tracks can occur.
 A source without 720p cannot honestly be relabeled as 720p.
 
-Version 0.1.3 passed 38 release unit tests, build and lint, 72 combined signed Android 6/API 23 emulator scenarios and one additional portrait/landscape visual scenario. A same-signer emulator update from the exact published 0.1.2 APK preserved the saved list, progress, audio/subtitle preferences and recent searches. These scenarios use owned media and controlled metadata. Physical installation and the owner's in-app update test remain pending; exact upstream feature/UI parity and universal compatibility are not claimed.
+Version 0.1.3 passed 38 release unit tests, build and lint, 72 combined signed Android 6/API 23 emulator scenarios and one additional portrait/landscape visual scenario. A same-signer emulator update from the exact published 0.1.2 APK preserved the saved list, progress, audio/subtitle preferences and recent searches. These scenarios use owned media and controlled metadata.
+
+On **25 November 2026**, the owner reported that the in-app update installed 0.1.3 and preserved their data. Read-only package inspection confirmed version 0.1.3/build 6 and the exact published APK hash. Data preservation is owner-reported; broader physical playback, other devices and complete upstream UI/feature parity remain unverified.
 
 <img src="docs/images/0.1.3-qa-comingsoon-portrait.png" alt="Actual MovieBox 0.1.3 Android 6 emulator UI with an owned synthetic upcoming-title fixture; not a live catalogue or phone capture" width="220">
 <img src="docs/images/0.1.3-qa-comingsoon-landscape.png" alt="Actual MovieBox 0.1.3 landscape Android 6 emulator UI with the same owned availability fixture" width="480">

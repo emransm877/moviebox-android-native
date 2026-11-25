@@ -2,7 +2,7 @@
   "project": "MovieBox Android App",
   "version": "0.1.3",
   "version_code": 6,
-  "status": "SCOPED_LOCAL_QA_PASSED",
+  "status": "SCOPED_QA_PASSED_OWNER_UPDATE_REPORTED",
   "package": "org.emransm.moviebox.phone",
   "artifact": {
     "filename": "MovieBox-Android-App-0.1.3.apk",
@@ -38,7 +38,16 @@
       "environment": "Same production APK; stable portrait and landscape emulator capture"
     },
     "independent_hq": "PASS for the recorded scoped implementation, runtime and visual evidence",
-    "physical_install_and_in_app_update": "UNVERIFIED; owner reserved the real update test",
+    "physical_install_and_in_app_update": {
+      "owner_report": "PASS: owner reports 0.1.3 installed through app and data preserved",
+      "reported_on_local_date": "2026-11-25",
+      "timezone": "Asia/Dhaka",
+      "installed_identity_read_only": "PASS: version0.1.3/build6 and APK SHA256 match published artifact",
+      "installed_apk_sha256": "12680df3240ddf9c91eb2b39c02bc991856946c1a5007f9b5c2d16bf01dd9633",
+      "agent_install_performed": false,
+      "private_library_content_comparison": "NOT PERFORMED; preservation is owner-reported",
+      "broader_physical_playback": "UNVERIFIED"
+    },
     "complete_upstream_parity": "UNVERIFIED",
     "all_device_compatibility": "UNVERIFIED",
     "same_signer_emulator_upgrade": {
@@ -64,6 +73,6 @@
       "description": "Actual current APK emulator UI after rotation settles; synthetic metadata"
     }
   ],
-  "publication": "Public release receipts and live checks are recorded separately; local QA does not prove publication or the owner physical update",
+  "publication": "This post-publication documentation addendum does not replace the immutable published APK, source ZIP, tag or checksums. The source ZIP remains the release-time snapshot.",
   "release_ready": false
 }

@@ -6,7 +6,9 @@ See [0.1.3 release scope](releases/0.1.3.md) and its [candidate manifest](releas
 
 The exact published 0.1.2 APK was installed on a disposable emulator, seeded with owned library/progress/preferences/search fixtures, then updated in place to this signed 0.1.3 APK. Both seed and post-update verification passed, preserving those values. This is an Android installation test, not a physical GitHub download or owner's updater test.
 
-These are owned-fixture emulator results. Physical installation, the owner's real in-app update test, exact complete upstream UI/feature parity and other device coverage remain unverified. No test result below is transferred from an older artifact to this candidate.
+These automated results use owned fixtures in an emulator. On **25 November 2026**, the owner reported installing 0.1.3 through the app with their data preserved. Read-only inspection independently confirmed version 0.1.3/build 6 and installed APK SHA-256 `12680df3240ddf9c91eb2b39c02bc991856946c1a5007f9b5c2d16bf01dd9633`. The agent did not install or clear the physical app. Saved-data preservation is the owner's report, not an independent comparison of private library contents.
+
+Broader physical playback, exact complete upstream UI/feature parity and other device coverage remain unverified. No older artifact's runtime result is transferred to this candidate. This documentation update does not replace the published APK, source ZIP, tag or checksums; the original source ZIP remains the release-time snapshot.
 
 ## Version 0.1.2
 

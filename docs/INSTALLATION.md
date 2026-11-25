@@ -17,7 +17,7 @@ playback, and open an available release link. A new GitHub commit alone is not a
 a newer complete stable APK must be published. There is no forced upgrade or silent
 installation.
 
-Version 0.1.3 uses the existing package and signing certificate. Its physical in-app update test remains pending. A locally built APK or new source commit will not appear in the updater: the matching complete, non-draft, non-prerelease GitHub release must be published first.
+Version 0.1.3 uses the existing package and signing certificate. On 25 November 2026, the owner reported a successful in-app update with their data preserved; read-only inspection confirmed the installed version and APK identity. This does not establish update behavior on every device. A locally built APK or new source commit will not appear in the updater: the matching complete, non-draft, non-prerelease GitHub release must be published first.
 
 Before an update, you can use **Me -> Back up library** to save your list and
 progress. Restoring a backup previews a merge before you confirm. Downloaded
